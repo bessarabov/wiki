@@ -1,0 +1,23 @@
+```meta
+{
+    "title" : "Список триггеров в автоматизациях Home Assistant"
+}
+```
+---
+```markdown
+# Список триггеров в автоматизациях Home Assistant
+
+ * [state](/wiki/home-assistant/trigger/state)
+ * numeric_state
+ * template
+ * sun
+ * event
+ * geo_location
+ * homeassistant
+ * mqtt
+ * tag
+ * time
+ * time_pattern
+ * webhook
+ * zone
+```

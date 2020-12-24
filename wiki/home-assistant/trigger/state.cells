@@ -1,0 +1,12 @@
+```meta
+{
+    "title" : "state триггер в автоматизациях Home Assistant"
+}
+```
+---
+```markdown
+# state триггер в автоматизациях Home Assistant
+
+`state` — это один из триггеров которые существуют в автоматизациях ([список всех триггеров](/wiki/home-assistant/triggers)).
+
+```
