@@ -16,4 +16,9 @@
 ```
 ---
 ```all_pages_list
+{
+    "exclude" : [
+        "/wiki"
+    ]
+}
 ```
