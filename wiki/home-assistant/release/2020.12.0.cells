@@ -8,11 +8,14 @@
 # Релиз Home Assistant 2020.12.0
 
 Релиз Home Assistant 2012.1.0 — это первый релиз
-с новой системой версионирования. До этого был релиз 0.118.5
+с новой системой версионирования. До этого был релиз с номером версии 0.118.5
 
 Релиз вышел 14 декабря 2020 года, вскоре после окончания конференции Home Assistant
 
+ * [Описание релиза в блоге Home Assistant](https://rc.home-assistant.io/blog/2020/12/13/release-202012/)
+ * [Релиз на GitHub](https://github.com/home-assistant/core/releases/tag/2020.12.0)
+
 ## Хотфиксы
 
- * 2020.12.1 — 17 декабря 2020
+ * 2020.12.1 — 17 декабря 2020 [GitHub](https://github.com/home-assistant/core/releases/tag/2020.12.1)
 ```
