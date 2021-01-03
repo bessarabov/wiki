@@ -25,6 +25,15 @@
 
 ## Home Assistant OS
 
+Это официально рекомендованный способ установки.
+Установка очень быстрая и простая. Устанавливается Home Assistant вместе с супервизором.
+
+Нужно скачать образ со страницы [https://www.home-assistant.io/hassio/installation/](https://www.home-assistant.io/hassio/installation/)
+В этом образе находится все не только Home Assistant, но еще и операционная система.
+
+У этого способа установки есть особенность — вы получаете "черный ящик" система полностью работает,
+но доступ к хосту очень ограничен.
+
 ## Home Assistant Supervised
 
 ## Home Assistant Container
@@ -35,7 +44,7 @@
 
 ## HassWP
 
-https://github.com/AlexxIT/HassWP
+[https://github.com/AlexxIT/HassWP](https://github.com/AlexxIT/HassWP)
 
-Документация на английском языке про способы установки: https://www.home-assistant.io/docs/installation/
+Документация на английском языке про способы установки: [https://www.home-assistant.io/docs/installation/](https://www.home-assistant.io/docs/installation/)
 ```
