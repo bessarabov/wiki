@@ -7,11 +7,11 @@
 ```markdown
 # Релиз Home Assistant 2021.1.0
 
-Релиз Home Assistant 2021.1.0 — это будущий релиз Home Assistant.
+Релиз Home Assistant 2021.1.0 вышел 6 января 2021 года. Это первый релиз который вышел по новой схеме,
+которую анонсировали на конференции Home Assistant — "релиз ежемесячно в первую среду месяца".
 
-По плану релиз должен выйти в первую среду месяца, 6 января 2021 года.
-
- * [Черновик релиза в блоге Home Assistant](https://rc.home-assistant.io/blog/2021/01/06/release-20211/)
+ * [Описание релиза в блоге Home Assistant](https://home-assistant.io/blog/2021/01/06/release-20211/)
+ * [Релиз на GitHub](https://github.com/home-assistant/core/releases/tag/2021.1.0)
 
 Предыдущий релиз: [2020.12.0](/wiki/home-assistant/release/2020.12.0)
 
