@@ -1,0 +1,28 @@
+```meta
+{
+    "title" : "Релиз Home Assistant 2021.2.0"
+}
+```
+---
+```markdown
+# Релиз Home Assistant 2021.2.0
+
+Релиз Home Assistant 2021.2.0 вышел в среду 3 февраля 2021 года.
+
+ * [Описание релиза в блоге Home Assistant](https://home-assistant.io/blog/2021/02/03/release-20212/)
+ * [Релиз на GitHub](https://github.com/home-assistant/core/releases/tag/2021.2.0)
+ * [Анонс в twitter](https://twitter.com/home_assistant/status/1357019395395043334)
+
+Предыдущий релиз: [2021.1.0](/wiki/home-assistant/release/2021.1.0)
+
+Следующий релиз: 2021.3.0
+
+## Беты
+
+ * 2021.2.0b0 — 27 января 2021 [GitHub](https://github.com/home-assistant/core/releases/tag/2021.2.0b0)
+ * 2021.2.0b1 — 29 января 2021 [GitHub](https://github.com/home-assistant/core/releases/tag/2021.2.0b1)
+ * 2021.2.0b2 — 2 февраля 2021 [GitHub](https://github.com/home-assistant/core/releases/tag/2021.2.0b2)
+ * 2021.2.0b3 — 3 февраля 2021 [GitHub](https://github.com/home-assistant/core/releases/tag/2021.2.0b3)
+ * 2021.2.0b4 — 3 февраля 2021 [GitHub](https://github.com/home-assistant/core/releases/tag/2021.2.0b4)
+ * 2021.2.0b5 — 3 февраля 2021 [GitHub](https://github.com/home-assistant/core/releases/tag/2021.2.0b5)
+```
