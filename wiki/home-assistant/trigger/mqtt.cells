@@ -11,6 +11,9 @@
 
 С помощью этого триггера можно запустить автоматизацию по событию в MQTT брокере.
 
+ * Если вам нужна базовая информация про автоматизации в Home Assistant — прочитайте [этот текст](https://ivan.bessarabov.ru/blog/home-assistant-automations)
+ * Если вам нужно понять что такое MQTT — прочитайте [этот текст](https://ivan.bessarabov.ru/blog/what-is-mqtt)
+
 ## Пример автоматизации
 ```
 ---
@@ -55,9 +58,9 @@ automation:
 ```
 ---
 ```markdown
-Эта автоматизация запистится если в топик `sensor/switch` придет строка `on`.
+Эта автоматизация запустится не при любом изменении топика `sensor/switch`, а только если в этот топик придет строка `on`.
 
-(В случае исользования строк `on` и `off` их нужно обязательно брать в кавычки)
+(При использовании строк `on` и `off` в yaml их нужно обязательно брать в кавычки)
 
 ## Поле `encoding`
 
@@ -76,4 +79,118 @@ automation:
       encoding: ''
     action:
       ...
+```
+---
+```markdown
+## Переменная `trigger`
+
+После того как mqtt триггер сработал в блоках `condition` и `action` становится доступна специальная переменная
+с именем `trigger`. Вот пример автоматизации которая записывает значение этой переменной в лог:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: mqtt
+      topic: sensor/temperature
+    action:
+      service: system_log.write
+      data:
+        message: "{{ trigger }}"
+```
+---
+```markdown
+Если отправить в топик `sensor/temperature` значение `22.7`, то в логе будет видно что содержится в переменной `trigger`:
+
+![](https://upload.bessarabov.ru/bessarabov/q4VGOS67pkyrZ34jVjZuosdclEQ.png)
+
+    {
+        'platform': 'mqtt',
+        'topic': 'sensor/temperature',
+        'payload': '22.7',
+        'qos': 0,
+        'description': 'mqtt topic sensor/temperature',
+        'payload_json': 22.7
+    }
+
+В том случае если значение топика — это json, то в поле `payload_json` будет находится разобранный json.
+
+## Примеры автоматизаций
+
+### Включение и выключение switch на основании данных из топика
+
+Вот автоматизация которая включает вентилятор если в топик `devices/fan` прилетает значение `1`
+и выключает вентилятор если в топик приходит значение `0`:
+
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: mqtt
+      topic: devices/fan
+    action:
+      - choose:
+          - conditions:
+              - condition: template
+                value_template: '{{ trigger.payload == "1" }}'
+            sequence:
+              - service: switch.turn_on
+                entity_id: switch.fan
+          - conditions:
+              - condition: template
+                value_template: '{{ trigger.payload == "0" }}'
+            sequence:
+              - service: switch.turn_off
+                entity_id: switch.fan
+```
+---
+```markdown
+### Автоматизация света в туалете с помощью датчика движения
+
+Это пример как можно сделать авто включение-выключение света в туалете с помощью датчика движения
+(можно использовать [разные датчики движения](https://ivan.bessarabov.ru/catalog/motion-detectors),
+например ["Aqara human body movement and illuminance sensor"](https://s.click.aliexpress.com/e/_dVPbdxh)).
+
+В первую очередь это пример работы MQTT триггера, есть разные способы как делать автоматизацию
+света, тут показыается пример использования сырых событий от датчика который подключен к Home Assistant
+через zigbee2mqtt.
+```
+---
+```yaml
+timer:
+  toilet:
+
+automation:
+
+  - alias: Turn on light in the toilet by aqara sensor motion
+    trigger:
+      platform: mqtt
+      topic: zigbee2mqtt/0x00158d0004518e15 condition:
+      condition: template
+      value_template: "{{ trigger.payload_json.occupancy }}"
+    action:
+    - service: light.turn_on
+      data:
+        entity_id: light.0xccccccfffe00418e
+        brightness: "{% if is_state('binary_sensor.night', 'on') %}1{% else %}255{% endif %}"
+    - service: timer.cancel
+      data:
+        entity_id: timer.toilet
+    - service: timer.start
+      data:
+        entity_id: timer.toilet
+        duration: "0:05:00"
+
+  - alias: Turn off light in the toilet by timer
+    trigger:
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.toilet
+    action:
+    - service: light.turn_off
+      data:
+        entity_id: light.0xccccccfffe00418e
+        transition: 5
 ```
