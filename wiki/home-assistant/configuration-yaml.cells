@@ -1,0 +1,31 @@
+```meta
+{
+    "title" : "Файл configuration.yaml"
+}
+```
+---
+```markdown
+# Файл `configuration.yaml`
+
+Файл `configuration.yaml` — это главный файл в котором хранятся настройки Home Assistant.
+
+## Содержимое файла `configuration.yaml` после установки Home Assistant
+
+После установки Home Assistant сразу появлесятся файл `config/configuration.yaml`
+со следуюищм содержимым:
+```
+---
+```yaml
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+```
