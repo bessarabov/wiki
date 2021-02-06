@@ -22,21 +22,77 @@
  * Можно "в один клик" устанавливать разные дополнения
  * Появляется простая возможность делать бекапы системы
  * Супервизор проверяет что система работает корректно, например уведомоляет если заканчивается место
+ * Появляются дополнительные сервисы hassio.*
 
-## Home Assistant OS
+## Home Assistant OS — установка на хост
 
 Это официально рекомендованный способ установки.
 Установка очень быстрая и простая. Устанавливается Home Assistant вместе с супервизором.
 
-Нужно скачать образ со страницы [https://www.home-assistant.io/hassio/installation/](https://www.home-assistant.io/hassio/installation/)
+Очень часто этот способ используют для того чтобы установить Home Assistant на Raspberry Pi.
+
+Из раздела "As an image for your device" страницы [https://www.home-assistant.io/hassio/installation/](https://www.home-assistant.io/hassio/installation/) нужно скачать образ.
 В этом образе находится не только Home Assistant, но еще и операционная система.
 
-У этого способа установки есть особенность — вы получаете "черный ящик" система полностью работает,
-но доступ к хосту очень ограничен.
+Этот образ нужно залить на sd карту (в случае Raspberry Pi) или на жесткий диск (в случае Nuc).
+После этого нужно включить компьютер и вы получаете работающий Home Assistant.
+
+У этого способа установки есть особенность — вы получаете "черный ящик" Home Assistant полностью работает,
+но доступ к операционной системе на которой он работает очень ограничен.
+
+## Home Assistant OS — установка в виртуальную машину
+
+Официальный способ установки. Устанавливается Home Assistant вместе с супервизором.
+
+С помощью этого способа можно получить работющий Home Assistant на компьютере
+с Windows, macOs или Linux. На компьютере появляется вирутальная машина в которой работает
+Home Assistant.
+
+Нужно скачать образ из раздела "As a virtual appliance" страницы [https://www.home-assistant.io/hassio/installation/](https://www.home-assistant.io/hassio/installation/).
+А дальше из этого образа нужно создать виртуальную машину. Это можно сделать, например с помощью VirtualBox.
+
+ * Документация [Как установить Home Assistant в VirtualBox](https://ivan.bessarabov.ru/blog/how-to-install-home-assistant-in-virtualbox)
 
 ## Home Assistant Supervised
 
+Это официальный способ установки. Но разработчики Home Assistant не особо любят его рекомендовать.
+Устанавливается Home Assistant вместе с супервизором.
+
+Это возможность установить Home Assistant на компьютер с Linux. Этот способ подходит людям
+кто знает и умеет использовать Linux консоль. При таком способе установки остается полный
+доступ к операционной системе, но так же появляется Home Assistant с супервизором.
+
+Опасность этого способа установки — нужно очень точно следовать всем рекомендациям.
+Если что-то сделать не совсем так, то Home Assistant переходит в режим "You are running an unsupported installation."
+или даже в "Your installation is running in an unhealthy state", а в этом режиме Home Assistant
+работает исключительно плохо.
+
+Все требования описаны в документе [https://github.com/home-assistant/architecture/blob/master/adr/0014-home-assistant-supervised.md](https://github.com/home-assistant/architecture/blob/master/adr/0014-home-assistant-supervised.md).
+
+Главное требование — операционная система Linux обязательно должна быть Debian Linux Debian 10 aka Buster.
+Другие версии Linux официально не поддерживаются. Поддержка отсутствет даже для тех Linux дистрибутивов которые сильно похожи на Debian (например, Rasbperry OS, Ubuntu).
+
+Прямо сейчас этот способ установки работает и на других операционных системах (Rasbperry OS, Ubuntu),
+но использование этих операционных систем выдает предупреждение "You are running an unsupported installation."
+и, возможно, что в будущем это будет выдавать не только предупреждение, но и вызывать какие-то проблемы с работой.
+Так что скорее всего, если ставить Home Assistant этим способом, то стоит соблюдать все требования,
+или использовать другой способ установки.
+
+Вот [описание как установить Home Assistant этим способом на Raspbian](https://ivan.bessarabov.ru/blog/how-to-install-home-assistant-on-raspbian-on-raspberry-pi-4) (но правильнее устанавливать на Debian 10)
+
 ## Home Assistant Container
+
+Это официальный способ запуска Home Assistant. При использовании этого способа супервизора нет.
+
+Для этого способа нужно чтобы на машине был установлен докер. Этот способ можно использовать
+на любой операционной системе (Windows, macOS, Linux).
+
+Это просто запуск докер контейнера из официального докерного образа Home Assistant.
+Можно запускать контейнер как напрямую через docker, можно через docker-compose, а можно использовать какие-то другие способы.
+
+Самый простой способ для запуска HA этим способом — это одна команда:
+
+    docker run -it --publish=8123:8123 --volume=`pwd`/config/:/config/ homeassistant/home-assistant:2021.2.1
 
 ## Home Assistant Core
 
@@ -44,7 +100,8 @@
 
 ## HassWP
 
-[https://github.com/AlexxIT/HassWP](https://github.com/AlexxIT/HassWP)
+Это неофицильный способ установки. Супервизора тут нет.
+Это возможность запустить Home Assistant на Windows машине очень быстро и просто, и сразу с некоторым наборо предустановленных дополенний.
 
-Документация на английском языке про способы установки: [https://www.home-assistant.io/docs/installation/](https://www.home-assistant.io/docs/installation/)
+Описание этого способа и все необходимые файлы находятся в репозитории [https://github.com/AlexxIT/HassWP](https://github.com/AlexxIT/HassWP)
 ```
