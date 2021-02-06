@@ -14,7 +14,7 @@
  * event
  * geo_location
  * homeassistant
- * mqtt
+ * [mqtt](/wiki/home-assistant/trigger/mqtt)
  * tag
  * time
  * time_pattern

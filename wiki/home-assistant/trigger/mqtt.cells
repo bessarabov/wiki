@@ -1,0 +1,79 @@
+```meta
+{
+    "title" : "mqtt триггер в автоматизациях Home Assistant"
+}
+```
+---
+```markdown
+# mqtt триггер в автоматизациях Home Assistant
+
+`mqtt` — это один из триггеров которые можно использовать в автоматизациях Home Assistant ([список всех триггеров](/wiki/home-assistant/triggers)).
+
+С помощью этого триггера можно запустить автоматизацию по событию в MQTT брокере.
+
+## Пример автоматизации
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: mqtt
+      topic: sensor/temperature
+    action:
+      service: system_log.write
+      data:
+        message: mqtt event
+```
+---
+```markdown
+Это автоматизация будет запускаться при любом обновлении топика `sensor/temperature`.
+
+Если отправить в топик значение `22.7`, то в логе можно будет увидеть сообщение `mqtt event`.
+
+![](https://upload.bessarabov.ru/bessarabov/ewbfGeNreM3_AUYD5P0Z5OODzZ0.png)
+
+Если отправить еще одно сообщение `22.7` в этот топик, то в логе появится еще одна запись.
+Автоматизация запускатся при любом обновлении топика, даже если значение которое пришло
+в топик ровно такое же как приходило в прошлый раз.
+
+## Поле `payload`
+
+Можно сделать чтобы автоматизация запускалась только в случае если топик приходит какое-то
+определенное значение. Вот пример:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: mqtt
+      topic: sensor/switch
+      payload: "on"
+    action:
+      service: system_log.write
+      data:
+        message: mqtt event
+```
+---
+```markdown
+Эта автоматизация запистится если в топик `sensor/switch` придет строка `on`.
+
+(В случае исользования строк `on` и `off` их нужно обязательно брать в кавычки)
+
+## Поле `encoding`
+
+Обычно поле `encoding` использовать не нужно. Если не указать поле `encoding`,
+это то же самое что явно сказать `encoding: "utf-8"`. При работе со строками и цифрами
+это как раз то что нужно. Но в случае работы с бинарными данными (например, если
+значение топика — это изображение), нужно явно указать `encoding: ''`:
+
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: mqtt
+      topic: camera/image
+      encoding: ''
+    action:
+      ...
+```
