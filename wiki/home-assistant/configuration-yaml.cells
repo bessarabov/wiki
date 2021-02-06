@@ -12,7 +12,7 @@
 ## Содержимое файла `configuration.yaml` после установки Home Assistant
 
 После установки Home Assistant сразу появлесятся файл `config/configuration.yaml`
-со следуюищм содержимым:
+со следующим содержимым:
 ```
 ---
 ```yaml
