@@ -1,0 +1,97 @@
+```meta
+{
+    "title" : "homeassistant триггер в автоматизациях Home Assistant"
+}
+```
+---
+```markdown
+# homeassistant триггер в автоматизациях Home Assistant
+
+`homeassistant` — это один из триггеров которые можно использовать в автоматизациях Home Assistant ([список всех триггеров](/wiki/home-assistant/triggers)).
+
+С помощью этого триггера можно запустить автоматизацию при старте home assistant или при штатном завершении работы.
+
+Если вам нужна базовая информация про автоматизации в Home Assistant — прочитайте [этот текст](https://ivan.bessarabov.ru/blog/home-assistant-automations)
+
+## Пример автоматизации про запуск Home Assistant
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: homeassistant
+      event: start
+    action:
+      service: system_log.write
+      data:
+        message: Home assistant has started
+```
+---
+```markdown
+Это автоматизация будет выполняться при каждом запуске Home Assistant.
+
+Запуск Home Assistant это процесс состоящий из многих элементов.
+Этот триггер стреляет когда Home Assistant полностью запущен.
+
+В процессе запуска Home Assistant в интерфейсе сначала появляется сообщение:
+"Home Assistant is starting, not everything will be available until it is finished."
+(при использовании интерфейса на русском языке — "Home Assistant запускается, пока что не всё может быть доступно.")
+
+![](https://upload.bessarabov.ru/bessarabov/EGlgN0LshDAXfCOs9Es1vYkTvrg.png)
+
+Этот триггер стреляет когда это сообщение пропадает и появляется сообщнеие "Home Assistant has started!"
+("Home Assistant работает!").
+
+## Пример автоматизации про остановку Home Assistant
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: homeassistant
+      event: shutdown
+    action:
+      service: system_log.write
+      data:
+        message: Home assistant shutdown
+```
+---
+```markdown
+Эта автоматизация выполнится при штатной остановке Home Assistant.
+Если сервер с Home Assistant просто выключить из розетки, то это автоматизация не выполнится.
+
+Штатная остановка происходит при нажатии на кнопки Restart и Stop на странице http://IP:8123/config/server_control
+
+![](https://upload.bessarabov.ru/bessarabov/UO4CiNdOc0shvTrjBfDPL1hw1Ko.png)
+
+## Примеры использования
+
+Бывает очень удобно [настроить чтобы Home Assistant мог отправить сообщения в телеграм](https://ivan.bessarabov.ru/blog/how-to-send-messages-to-telegram-from-home-assistant)
+и написать автоматизации которые будут отправлять в телеграм сообщение про запуск Home Assistant и про его остановку.
+```
+---
+```yaml
+automation:
+  - alias: Notify about HA start
+    trigger:
+      platform: homeassistant
+      event: start
+    action:
+      service: notify.me
+      data:
+        message: "Home Assistant - start"
+
+  - alias: Notify about HA shutdown
+    trigger:
+      platform: homeassistant
+      event: shutdown
+    action:
+      service: notify.me
+      data:
+        message: "Home Assistant - shutdown"
+```
+---
+```markdown
+Если вдруг приходит сообщение "Home Assistant - start" это значит что был какой-то сбой (например, пропадало электричество). Home Assistant выключался, а
+вот сейчас снова включился. Это сообщение — это не замена полноценному мониторингу, но иногда это может быть полезно.
+```

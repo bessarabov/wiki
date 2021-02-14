@@ -13,7 +13,7 @@
  * sun
  * event
  * geo_location
- * homeassistant
+ * [homeassistant](/wiki/home-assistant/trigger/homeassistant)
  * [mqtt](/wiki/home-assistant/trigger/mqtt)
  * tag
  * [time](/wiki/home-assistant/trigger/time)
