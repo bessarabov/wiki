@@ -17,7 +17,7 @@
 ## Пример
 
 Новая установка Home Assistant. Создаем папку `www`. Папка `www` должна быть в той же папке
-в которой находится [главный конфигурационный файл configuration.yaml](wiki/home-assistant/configuration-yaml).
+в которой находится [главный конфигурационный файл configuration.yaml](/wiki/home-assistant/configuration-yaml).
 
 И создаем в папке `www` файл `a.txt` с содержимым `Hello!`. Вот как выглядит структура файлов:
 
