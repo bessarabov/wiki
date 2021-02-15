@@ -7,7 +7,7 @@
 ```markdown
 # Список триггеров в автоматизациях Home Assistant
 
- * [state](/wiki/home-assistant/trigger/state)
+ * state
  * numeric_state
  * template
  * sun
