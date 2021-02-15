@@ -64,6 +64,19 @@ automation:
 
 ![](https://upload.bessarabov.ru/bessarabov/UO4CiNdOc0shvTrjBfDPL1hw1Ko.png)
 
+## Переменная `trigger`
+
+После того как триггер сработал в блоках `condition` и `action` становится доступна специальная переменная
+с именем `trigger`. Вот что находится в этой переменной при использовании `event: start`:
+
+    {
+        'platform': 'homeassistant',
+        'event': 'start',
+        'description': 'Home Assistant starting'
+    }
+
+Мне не удалось использовать переменную `trigger` При использовании `event: shutdown`, возможно это баг в Home Assistant.
+
 ## Примеры использования
 
 Бывает очень удобно [настроить чтобы Home Assistant мог отправить сообщения в телеграм](https://ivan.bessarabov.ru/blog/how-to-send-messages-to-telegram-from-home-assistant)
