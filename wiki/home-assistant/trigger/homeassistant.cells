@@ -9,9 +9,9 @@
 
 `homeassistant` — это один из триггеров которые можно использовать в автоматизациях Home Assistant ([список всех триггеров](/wiki/home-assistant/triggers)).
 
-С помощью этого триггера можно запустить автоматизацию при старте home assistant или при штатном завершении работы.
+С помощью этого триггера можно запустить автоматизацию при старте Home Assistant или при штатном завершении работы.
 
-Если вам нужна базовая информация про автоматизации в Home Assistant — прочитайте [этот текст](https://ivan.bessarabov.ru/blog/home-assistant-automations)
+Если вам нужна базовая информация про автоматизации в Home Assistant — прочитайте [этот текст](https://ivan.bessarabov.ru/blog/home-assistant-automations).
 
 ## Пример автоматизации про запуск Home Assistant
 ```
@@ -60,7 +60,7 @@ automation:
 Эта автоматизация выполнится при штатной остановке Home Assistant.
 Если сервер с Home Assistant просто выключить из розетки, то это автоматизация не выполнится.
 
-Штатная остановка происходит при нажатии на кнопки Restart и Stop на странице http://IP:8123/config/server_control
+Штатная остановка происходит при нажатии на кнопки Restart или Stop на странице http://IP:8123/config/server_control
 
 ![](https://upload.bessarabov.ru/bessarabov/UO4CiNdOc0shvTrjBfDPL1hw1Ko.png)
 
@@ -75,7 +75,7 @@ automation:
         'description': 'Home Assistant starting'
     }
 
-Мне не удалось использовать переменную `trigger` При использовании `event: shutdown`, возможно это баг в Home Assistant.
+Мне не удалось использовать переменную `trigger` при использовании `event: shutdown`, возможно это баг в Home Assistant.
 
 ## Примеры использования
 
