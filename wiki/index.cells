@@ -33,6 +33,7 @@
  * [Использование папки www](/wiki/home-assistant/www-directory-local)
  * [mqtt триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/mqtt)
  * [time триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/time)
+ * [time_pattern триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/time_pattern)
  * [homeassistant триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/homeassistant)
 
 Исходный текст всех страниц живет на [GitHub](https://github.com/bessarabov/wiki).
