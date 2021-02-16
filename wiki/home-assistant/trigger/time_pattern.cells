@@ -1,0 +1,132 @@
+```meta
+{
+    "title" : "time_pattern триггер в автоматизациях Home Assistant"
+}
+```
+---
+```markdown
+# time_pattern триггер в автоматизациях Home Assistant
+
+`time_pattern` — это один из триггеров которые можно использовать в автоматизациях Home Assistant ([список всех триггеров](/wiki/home-assistant/triggers)).
+
+С помощью этого триггера можно регулярно запускать автоматизации.
+
+Если вам нужна базовая информация про автоматизации в Home Assistant — прочитайте [этот текст](https://ivan.bessarabov.ru/blog/home-assistant-automations).
+
+## Пример
+
+Вот пример автоматизации:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: time_pattern
+      minutes: "/5"
+    action:
+      service: system_log.write
+      data:
+        message: "time_pattern triggered"
+```
+---
+```markdown
+Это автоматизация будет запускаться каждые 5 минут. В `00:00:00`, `00:05:00`, `00:10:00`, `00:15:00` и т.д.
+
+Вот еще один пример:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: time_pattern
+      minutes: "5"
+    action:
+      service: system_log.write
+      data:
+        message: "time_pattern triggered"
+```
+---
+```markdown
+
+Эта автоматизация будет запускаться 1 раз час. Автоматизация будет запускаться всегда когда минуты — это ровно число 5,
+т.е.: `00:05:00`, `01:05:00`, `02:05:00`, и т.д.
+
+## `hours`, `minutes`, `seconds`
+
+Триггеру обязательно нужно указать либо `hours`, либо `minutes`, либо `seconds`.
+Если ничего из этого не узкать, то будет ошибка:
+
+    Invalid config for [automation]: must contain at least one of hours, minutes, seconds..
+
+Можно одноврменно указать любые два значения, например:
+
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: time_pattern
+      hours: "3"
+      seconds: "30"
+    action:
+      service: system_log.write
+      data:
+        message: "time_pattern triggered"
+```
+---
+```markdown
+
+Или можно указать сразу все 3:
+
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: time_pattern
+      hours: "/3"
+      minutes: "*"
+      seconds: "8"
+    action:
+      service: system_log.write
+      data:
+        message: "time_pattern triggered"
+```
+---
+```markdown
+
+## Значения
+
+В качестве значений `hours`, либо `minutes`, либо `seconds` можно использовать одну из трех вещей:
+
+ * число — это означает запуск автоматизации когда час/минута/секунда ровно такое как указано в числе
+ * слеш и число (`"/4"`) — запуск будет происходит когда час/минута/секунда это 0 или значение делится нацело на указанное после слеша число
+ * звездочка (`"*"`) — то же самое что и `"/1"`
+
+## Отсутствие значений
+
+В зависимости от того что указано по разному определяются отсутствущие значения.
+Логика: "If larger units are specified, default the smaller units to zero"
+
+ * Указано только значение для seconds — hours становистся `"*"`, minutes становисят `"*"`
+ * Указано только значение для minutes — hours становится `"*"`, seconds становится `0`
+ * Указано только значение для minutes и seconds — hours становится `"*"`
+ * Указано только значение для hours — minues становится `0`, seconds становится `0`
+ * Указано только значение для hours и seconds — minutes сновится `0`
+ * Указано только значение для hours и minutes — seconds становится `0`
+
+## Исходный код триггера
+
+Python код триггера `time_pattern` находится на GitHub — [https://github.com/home-assistant/core/blob/dev/homeassistant/components/homeassistant/triggers/time_pattern.py](https://github.com/home-assistant/core/blob/dev/homeassistant/components/homeassistant/triggers/time_pattern.py)
+
+## Переменная `trigger`
+
+После того как триггер сработал в блоках `condition` и `action` становится доступна специальная переменная
+с именем `trigger`. Вот пример того что может находиться в этой переменной:
+
+    {
+        'platform': 'time_pattern',
+        'now': datetime.datetime(2021, 2, 16, 9, 30, 0, 2147, tzinfo=<UTC>),
+        'description': 'time pattern'
+    }
+```

@@ -17,7 +17,7 @@
  * [mqtt](/wiki/home-assistant/trigger/mqtt)
  * tag
  * [time](/wiki/home-assistant/trigger/time)
- * time_pattern
+ * [time_pattern](/wiki/home-assistant/trigger/time_pattern)
  * webhook
  * zone
 ```
