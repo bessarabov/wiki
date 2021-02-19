@@ -19,7 +19,7 @@
 
 Для решения этой задачи я сделал свою собственную маленьку викепедию —
 набор текстов которые можно править. В первую очередь тексты пишу и правлю тут я,
-но исходный код всех текстов хранится на GitHub и при желании кто угодно может предложить
+но исходный код всех текстов хранится на [GitHub](https://github.com/bessarabov/wiki) и при желании кто угодно может предложить
 любое изменение текста.
 
 Мне очень интересна система Home Assistant и сейчас почти все тексты на этой
@@ -36,8 +36,6 @@
  * [mqtt триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/mqtt)
  * [time триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/time)
  * [time_pattern триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/time_pattern)
-
-Исходный текст всех страниц живет на [GitHub](https://github.com/bessarabov/wiki).
 
 [Полный список всех страниц на вики](/wiki/all-pages)
 ```
