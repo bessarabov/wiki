@@ -10,7 +10,7 @@
  * state
  * numeric_state
  * template
- * sun
+ * [sun](/wiki/home-assistant/trigger/sun)
  * event
  * geo_location
  * [homeassistant](/wiki/home-assistant/trigger/homeassistant)
