@@ -1,0 +1,159 @@
+```meta
+{
+    "title" : "Настройка удаленного доступа в Home Assistant с помощью кастомного компонента Dataplicity"
+}
+```
+---
+```markdown
+# Настройка удаленного доступа в Home Assistant с помощью кастомного компонента Dataplicity
+
+В ферале 2021 года AlexxIT соделал новый кастомный компонет для Home Assistant — Dataplicity ( [https://github.com/AlexxIT/Dataplicity](https://github.com/AlexxIT/Dataplicity) )
+
+С помощю этого компонента можно настроить удаленный доступ к серверу Home Assistant.
+Появляется адрес в интернете, на который вы можете зайти с помощью браузера и увидеть свой интерфейс Home Assistant (и этот же адрес можно использовать в мобильном приложении Home Assistant)
+
+Этот компонент позволяет настроить удаленный доступ даже на сером ip совершенно бесплатно.
+Компонент работает вне зависиомсти от того если ли у вас супервизор в Home Assistant или нет.
+
+Использование этого компонента — это один из самых простых способов сделать удаленный доступ к серверу Home Assistant.
+
+Для того чтобы появился удаленный доступ к серверу HA с помощью этого комонента нужно сделать:
+
+ 1. Установить компонент на сервер Home Assistant
+ 2. Подключить компонент
+ 3. Зарегистрироваться на сервисе https://www.dataplicity.com/ (нужно указать email)
+ 4. Настроить компонент и сервис
+
+## Установка компонента на сервер Home Assistant
+
+Самый сложный этап настройки. Для этого нужно знать как работать с файлами в папке с конфигами
+Home Assistant.
+
+Нужно зайти на [страницу кастомного компонента на GitHub](https://github.com/AlexxIT/Dataplicity),
+зайти в раздел "Релизы" и сказчать zip файл с исходным кодом компонента.
+
+![](https://upload.bessarabov.ru/bessarabov/1moHhejLQClc6VMGiWrxeoPVEAQ.png)
+
+![](https://upload.bessarabov.ru/bessarabov/8rei6GJDzJmBLoUiT0I8uiju6Og.png)
+
+Zip файл нужно разархивировать, и все файлы из папки Dataplicity-1.0.0/custom_components/dataplicity/
+нужно положить в папку config/custom_components/dataplicity/
+
+Папка custom_components должна быть в той же директории что и файл configuration.yaml
+Вот какая структура файлов и папок должны быть:
+
+    │
+    ├── custom_components
+    │   └── dataplicity
+    │       ├── translations
+    │       │   └── en.json
+    │       ├── __init__.py
+    │       ├── config_flow.py
+    │       ├── manifest.json
+    │       └── utils.py
+    ├── configuration.yaml
+    ...
+    ├── home-assistant_v2.db
+    └── secrets.yaml
+
+После размещения файлов, нужно перезагрузить систему Home Assistant.
+
+## Подключение компонента
+
+После того как компонент установлен его нужно подключить.
+
+Для этого нужно зайти в раздел Configuration:
+
+![](https://upload.bessarabov.ru/bessarabov/n6wj3rmR1bESN5ZXSJgjZ9KlvKQ.png)
+
+Там выбрать Integrations:
+
+![](https://upload.bessarabov.ru/bessarabov/pNrVjb0N_MirKa3i7vSpkLICfvM.png)
+
+Нажать на кнопку Add integration:
+
+![](https://upload.bessarabov.ru/bessarabov/oHF21RxKNMYWb6AjmPT3HCJjyeo.png)
+
+И начать вводить название интеграции. Обычно после ввода "data" остается только одна нужная интеграция:
+
+![](https://upload.bessarabov.ru/bessarabov/o8WEfsZeWcrJ5GPEZMNfvWeClUI.png)
+
+После выбора этой интеграции появляется окошко:
+
+![](https://upload.bessarabov.ru/bessarabov/eFTYuMXcfzP6m1Mw8Um-K1Icinc.png)
+
+В это окошко нужно ввести данные от сервиса Dataplicity. Слово "Dataplicity" в этом окошке —
+это ссылка на сайт [https://www.dataplicity.com/](https://www.dataplicity.com/). Нужно зайти на этот сайт:
+
+## Регистрация на сайте Dataplicity
+
+После перехода по ссылке открывается сайт:
+
+![](https://upload.bessarabov.ru/bessarabov/9bxYN1f1lXjqf4wOYt-4voqcGbQ.png)
+
+В поле для ввода email адреса нужно ввести ваш настоящий email адрес и нажать на кнопку "Start".
+
+После этого сразу же появляется секретаная строчка:
+
+![1.png](https://upload.bessarabov.ru/bessarabov/cPLr2I0Xst389J9tvHf5gZzg1oM.png)
+
+Вот пример строчки которую может показать сайт:
+
+    curl -s https://www.dataplicity.com/qlqyu6nt.py | sudo python
+
+Из этой строчки нужен только адрес:
+
+    https://www.dataplicity.com/qlqyu6nt.py
+
+## Продолжение настройки кастомного компонента
+
+Адрес который получили на прошлом шаге нужно ввести в окно:
+
+Это адрес нужно ввести в кастомный комопонент:
+
+![](https://upload.bessarabov.ru/bessarabov/2ecqd_fmofmb0p7i8AkzSSW7n9g.png)
+
+И нажать на кнопку "Submit".
+
+После этого на месте кнопке "Submit" начнет крутиться спиннер и он может крутиться
+минуту-другую:
+
+![](https://upload.bessarabov.ru/bessarabov/-e3k0UjgLDcMO5jATQDRitbN3ws.png)
+
+Через некоторое время появится окошко что все прошло успешно:
+
+![](https://upload.bessarabov.ru/bessarabov/GWg_2NY0G4JI1_JmSC3uhNzCRrY.png)
+
+Осталось выполнить последние действие.
+
+## Включение wormhole
+
+Нужно зайти по ссылке в окошке:
+
+![](https://upload.bessarabov.ru/bessarabov/xYlYlmeoSLwLzQFsmq55153X06I.png)
+
+И включить переключалку Wormhole:
+
+![](https://upload.bessarabov.ru/bessarabov/2xTWIo5Yel_dSCnzbMoFLBAaOBE.png)
+
+Появится адрес:
+
+![](https://upload.bessarabov.ru/bessarabov/_-I_0EEWmTUdgyk9gVM-XtJrpUk.png)
+
+Например, этот адрес может выглядеть вот так:
+
+    https://consanguine-wasp-4419.dataplicity.io/
+
+Если зайти по этому адресу — то откроется интерфейс Home Assistant:
+
+![](https://upload.bessarabov.ru/bessarabov/KbLOwws0Wdar4KD1nVEjWvBNHRw.png)
+
+Этот адрес — это и есть адрес по которому вы можете зайти на ваш сервер Home Assistant из любой точки мира.
+
+Еще один момент который нужно сделать — это зайти в ваш почтовый ящик и подветрдить email для сервиса dataplicity.
+
+## Ограничения
+
+ * Компонент не работает если Home Assistnat установлен в venv на Windows компьютере
+ * Компонент работает только если интерфейс Home Assistant работает на стандартном порту 8123
+```
