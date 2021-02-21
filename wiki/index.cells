@@ -29,6 +29,7 @@
 Вот некоторые тексты которые тут есть:
 
  * [Способы установки Home Assistant](/wiki/home-assistant/install)
+ * [Настройка удаленного доступа в Home Assistant с помощью кастомного компонента Dataplicity](/wiki/home-assistant/remote-access/custom-component-dataplicity)
  * [Использование secrets.yaml в Home Assistant](/wiki/home-assistant/secrets)
  * [Использование папки www](/wiki/home-assistant/www-directory-local)
  * [sun триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/sun)

@@ -7,7 +7,10 @@
 ```markdown
 # Настройка удаленного доступа в Home Assistant с помощью кастомного компонента Dataplicity
 
-В ферале 2021 года AlexxIT соделал новый кастомный компонет для Home Assistant — Dataplicity ( [https://github.com/AlexxIT/Dataplicity](https://github.com/AlexxIT/Dataplicity) )
+В ферале 2021 года AlexxIT сделал новый кастомный компонет для Home Assistant — Dataplicity.
+
+ * Репозиторий — [https://github.com/AlexxIT/Dataplicity](https://github.com/AlexxIT/Dataplicity)
+ * Анонс в канале AlexxIT — [https://t.me/AlexxIT_SmartHome/445](https://t.me/AlexxIT_SmartHome/445)
 
 С помощю этого компонента можно настроить удаленный доступ к серверу Home Assistant.
 Появляется адрес в интернете, на который вы можете зайти с помощью браузера и увидеть свой интерфейс Home Assistant (и этот же адрес можно использовать в мобильном приложении Home Assistant)
