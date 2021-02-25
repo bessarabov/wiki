@@ -1,0 +1,138 @@
+```meta
+{
+    "title" : "Проблема что контейнер hassio_audio потребляет много CPU"
+}
+```
+---
+```markdown
+# Проблема что контейнер hassio_audio потребляет много CPU
+
+24 февраля 2021 перезагрузил сервер с Home Assistant и после этого вижу что потребление CPU сильно увеличилось.
+
+Вот график:
+
+![](https://upload.bessarabov.ru/bessarabov/GbYhtEk-iVVDAijIE5GCD9RVdhU.png)
+
+Этот HA работает на raspberry pi 3b+, там работает операционная система Raspbian, HA установлен способом "Home Assistant Supervised".
+Поскольку у меня используется операционная системема Raspbian, а не Debian — это не официально поддерживаемый способ установки,
+на странице IP:8123/hassio/system я вижу сообщение "You are running an unsupported installation":
+
+![](https://upload.bessarabov.ru/bessarabov/oL5D7gI6oZgjXw5lN2NOaTEn9lw.png)
+
+У меня установлена версия HA 2021.2.3, версия супервизора 2021.02.11, версия докера 19.03.12, build 48a6621
+
+Как потом оказалось, эта проблема идет из-за того что используется неофициальный спосб установки HA.
+
+Пошел разбираться что происходит. Команда docker stats показывает что контейнер hassio_audio стал потреблять
+много CPU:
+
+![](https://upload.bessarabov.ru/bessarabov/sNhtcwIOZiowiOvg_7M9-M2-sCc.png)
+
+Если посмотреть логи этого контейнера (с помощью команды "docker logs -f --since=1m hassio_audio"),
+то видно что там постоянно постонно повторяется вот такое:
+
+    W: [pulseaudio] main.c: Running in system mode, but --disallow-module-loading not set.
+    D: [pulseaudio] core-rtclock.c: Timer slack is set to 50 us.
+    D: [pulseaudio] core-util.c: setpriority() worked.
+    I: [pulseaudio] core-util.c: Successfully gained nice level -11.
+    I: [pulseaudio] main.c: Found user 'root' (UID 0) and group 'root' (GID 0).
+    W: [pulseaudio] main.c: Home directory of user 'root' is not '/var/run/pulse', ignoring.
+    W: [pulseaudio] caps.c: Normally all extra capabilities would be dropped now, but that's impossible because PulseAudio was built without capabilities support.                                                                                I: [pulseaudio] main.c: Successfully changed user to "root".
+    I: [pulseaudio] main.c: This is PulseAudio 14.2
+    D: [pulseaudio] main.c: Compilation CFLAGS: Not yet supported on meson
+    D: [pulseaudio] main.c: Running on host: Linux armv7l 5.4.51-v7+ #1333 SMP Mon Aug 10 16:45:19 BST 2020
+    D: [pulseaudio] main.c: Found 4 CPUs.                                                                                                                                                                                                         I: [pulseaudio] main.c: Page size is 4096 bytes
+    D: [pulseaudio] main.c: Compiled with Valgrind support: no
+    D: [pulseaudio] main.c: Running in valgrind mode: no
+    D: [pulseaudio] main.c: Running in VM: no
+    D: [pulseaudio] main.c: Running from build tree: no
+    D: [pulseaudio] main.c: Optimized build: yes
+    D: [pulseaudio] main.c: All asserts enabled.                                                                                                                                                                                                  I: [pulseaudio] main.c: Machine ID is 4d241e2ccd4041b080d75ecb7188b97c.
+    I: [pulseaudio] main.c: Using runtime directory /var/run/pulse.                                                                                                                                                                               I: [pulseaudio] main.c: Using state directory /data/states.
+    I: [pulseaudio] main.c: Using modules directory /usr/lib/pulse-14.2/modules.
+    I: [pulseaudio] main.c: Running in system mode: yes
+    W: [pulseaudio] main.c: OK, so you are running PA in system mode. Please make sure that you actually do want to do that.
+    W: [pulseaudio] main.c: Please read http://www.freedesktop.org/wiki/Software/PulseAudio/Documentation/User/WhatIsWrongWithSystemWide/ for an explanation why system mode is usually a bad idea.
+    W: [pulseaudio] pid.c: Stale PID file, overwriting.
+    I: [pulseaudio] main.c: System supports high resolution timers
+    D: [pulseaudio] memblock.c: Using private memory pool with 1024 slots of size 64.0 KiB each, total size is 64.0 MiB, maximum usable slot size is 65496
+    I: [pulseaudio] cpu-arm.c: CPU flags: V6 V7 VFP EDSP NEON VFPV3
+    I: [pulseaudio] svolume_arm.c: Initialising ARM optimized volume functions.
+    I: [pulseaudio] sconv_neon.c: Initialising ARM NEON optimized conversions.
+    I: [pulseaudio] mix_neon.c: Initialising ARM NEON optimized mixing functions.
+    I: [pulseaudio] remap_neon.c: Initialising ARM NEON optimized remappers.
+    D: [pulseaudio] database-tdb.c: Opened TDB database '/data/states/4d241e2ccd4041b080d75ecb7188b97c-device-volumes.tdb'
+    I: [pulseaudio] database.c: Successfully opened 'device-volumes' database file '/data/states/4d241e2ccd4041b080d75ecb7188b97c-device-volumes.tdb'.
+    I: [pulseaudio] module.c: Loaded "module-device-restore" (index: #0; argument: "").
+    D: [pulseaudio] database-tdb.c: Opened TDB database '/data/states/4d241e2ccd4041b080d75ecb7188b97c-stream-volumes.tdb'
+    I: [pulseaudio] database.c: Successfully opened 'stream-volumes' database file '/data/states/4d241e2ccd4041b080d75ecb7188b97c-stream-volumes.tdb'.
+    D: [pulseaudio] protocol-dbus.c: Interface org.PulseAudio.Ext.StreamRestore1 added for object /org/pulseaudio/stream_restore1
+    I: [pulseaudio] module.c: Loaded "module-stream-restore" (index: #1; argument: "").
+    D: [pulseaudio] database-tdb.c: Opened TDB database '/data/states/4d241e2ccd4041b080d75ecb7188b97c-card-database.tdb'
+    I: [pulseaudio] database.c: Successfully opened 'card-database' database file '/data/states/4d241e2ccd4041b080d75ecb7188b97c-card-database.tdb'.
+    I: [pulseaudio] module.c: Loaded "module-card-restore" (index: #2; argument: "").
+    I: [pulseaudio] module.c: Loaded "module-switch-on-port-available" (index: #3; argument: "").
+    I: [pulseaudio] module.c: Loaded "module-switch-on-connect" (index: #4; argument: "").
+    D: [pulseaudio] module-udev-detect.c: /dev/snd/controlC0 is accessible: yes
+    W: [pulseaudio] module-udev-detect.c: Failed to open /proc/asound/card0: No such file or directory
+    D: [pulseaudio] module-udev-detect.c: /devices/platform/soc/3f00b840.mailbox/bcm2835_audio/sound/card0 is busy: no
+    E: [pulseaudio] core-rtclock.c: Assertion 'clock_gettime(CLOCK_REALTIME, &ts) == 0' failed at ../src/pulsecore/core-rtclock.c:93, function pa_rtclock_get(). Aborting.
+
+Пошел искать в интернете как это чинить.
+
+Нашел огромный тред на официальном форуме HA — https://community.home-assistant.io/t/solved-hassio-audio-is-in-boot-loop-and-spams-my-syslog-with-errors/282538
+
+Там есть такое решение.
+
+Сначала нужно скопировать файл default.json
+
+    root@raspberrypi:/etc/docker# ls
+    daemon.json  key.json
+    root@raspberrypi:/etc/docker# wget https://raw.githubusercontent.com/moby/moby/bc6f4cc7032544553d2304a5b47ba235dbfe5b9c/profiles/seccomp/default.json
+    --2021-02-25 07:02:25--  https://raw.githubusercontent.com/moby/moby/bc6f4cc7032544553d2304a5b47ba235dbfe5b9c/profiles/seccomp/default.json
+    Resolving raw.githubusercontent.com (raw.githubusercontent.com)... 185.199.108.133, 185.199.111.133, 185.199.109.133, ...
+    Connecting to raw.githubusercontent.com (raw.githubusercontent.com)|185.199.108.133|:443... connected.
+    HTTP request sent, awaiting response... 200 OK
+    Length: 12909 (13K) [text/plain]
+    Saving to: ‘default.json’
+
+    default.json                                 100%[============================================================================================>]  12.61K  --.-KB/s    in 0.002s
+
+    2021-02-25 07:02:26 (6.81 MB/s) - ‘default.json’ saved [12909/12909]
+
+    root@raspberrypi:/etc/docker# ls
+    daemon.json  default.json  key.json
+    root@raspberrypi:/etc/docker#
+
+А дальше нужно отредактировать этот файл.
+
+Во начало этого файла изначально:
+
+    {
+            "defaultAction": "SCMP_ACT_ERRNO",
+            "archMap": [
+                    {
+                            "architecture": "SCMP_ARCH_X86_64",
+
+Нужно сделать вот так (заменить SCMP_ACT_ERRNO на SCMP_ACT_TRACE):
+
+    {
+            "defaultAction": "SCMP_ACT_TRACE",
+            "archMap": [
+                    {
+                            "architecture": "SCMP_ARCH_X86_64",
+
+Потом нужно поправить файл  /etc/docker/daemon.json Сделать чтобы там было вот так (стоит заранее сохранить этот файл чтобы в случае нобходимости можно было его вернуть):
+
+    {
+        "log-driver": "journald",
+        "seccomp-profile": "/etc/docker/default.json",
+        "storage-driver": "overlay2"
+    }
+
+И перезагрузить raspberry pi.
+
+После загрузки контейнер HA перестает потряблять много CPU:
+
+![](https://upload.bessarabov.ru/bessarabov/r1B0ZVsaS6D6pvlRMImAGkJkQV0.png)
+```
