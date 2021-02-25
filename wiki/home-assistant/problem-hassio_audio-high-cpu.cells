@@ -29,7 +29,7 @@
 ![](https://upload.bessarabov.ru/bessarabov/sNhtcwIOZiowiOvg_7M9-M2-sCc.png)
 
 Если посмотреть логи этого контейнера (с помощью команды "docker logs -f --since=1m hassio_audio"),
-то видно что там постоянно постонно повторяется вот такое:
+то видно что там постоянно повторяется вот такое:
 
     W: [pulseaudio] main.c: Running in system mode, but --disallow-module-loading not set.
     D: [pulseaudio] core-rtclock.c: Timer slack is set to 50 us.
@@ -132,7 +132,7 @@
 
 И перезагрузить raspberry pi.
 
-После загрузки контейнер HA перестает потряблять много CPU:
+После загрузки контейнер HA перестает потреблять много CPU:
 
 ![](https://upload.bessarabov.ru/bessarabov/r1B0ZVsaS6D6pvlRMImAGkJkQV0.png)
 ```
