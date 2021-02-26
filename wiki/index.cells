@@ -37,6 +37,7 @@
  * [mqtt триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/mqtt)
  * [time триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/time)
  * [time_pattern триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/time_pattern)
+ * [webhook триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/webhook)
 
 [Полный список всех страниц на вики](/wiki/all-pages)
 ```
