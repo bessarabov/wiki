@@ -1,0 +1,261 @@
+```meta
+{
+    "title" : "webhook триггер в автоматизациях Home Assistant"
+}
+```
+---
+```markdown
+# webhook триггер в автоматизациях Home Assistant
+
+`webhook` — это один из триггеров которые можно использовать в автоматизациях Home Assistant ([список всех триггеров](/wiki/home-assistant/triggers)).
+
+С помощью этого триггера можно запустить автоматизацию в Home Assistant из какой-либо другой системы с помощью отправки HTTP запроса.
+
+Если вам нужна базовая информация про автоматизации в Home Assistant — прочитайте [этот текст](https://ivan.bessarabov.ru/blog/home-assistant-automations)
+
+## Пример автоматизации
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: webhook
+      webhook_id: bla
+    action:
+      service: system_log.write
+      data:
+        message: webhook
+```
+---
+```markdown
+Это автоматизация выполнится если отправить HTTP запрос методом POST на специальный адрес.
+
+Вот пример отправки запроса с помощью программы `curl`:
+
+    curl -XPOST http://homeassistant.local:8123/api/webhook/bla
+
+После выполнения этой команды в логе можно будет увидеть сообщение `webhook`:
+
+![](https://upload.bessarabov.ru/bessarabov/kzEXsittnvwFZHj5S3JnDQk_AmY.png)
+
+## HTTP методы
+
+Вебхук сработает если отправить запрос методом POST. Если отправить запрос
+методом GET, то будет ошибка `405 Method Not Allowed`:
+
+    $ curl -v http://homeassistant.local:8123/api/webhook/bla
+    *   Trying ::1...
+    * TCP_NODELAY set
+    * Connected to homeassistant.local (::1) port 8123 (#0)
+    > GET /api/webhook/bla HTTP/1.1
+    > Host: homeassistant.local:8123
+    > User-Agent: curl/7.64.1
+    > Accept: */*
+    >
+    < HTTP/1.1 405 Method Not Allowed
+    < Content-Type: text/plain; charset=utf-8
+    < Allow: HEAD,OPTIONS,POST,PUT
+    < Content-Length: 23
+    < Date: Fri, 26 Feb 2021 10:16:47 GMT
+    < Server: Python/3.8 aiohttp/3.7.3
+    <
+    * Connection #0 to host homeassistant.local left intact
+    405: Method Not Allowed* Closing connection 0
+
+В документации сказано что нужно отправлять запросы с помощью метода POST,
+но в сообщении при использовании метода GET сказно что работают методы HEAD,OPTIONS,POST,PUT.
+
+Методы HEAD,POST,PUT действительно работают, но вот использование метода OPTIONS выдает ошибку:
+
+    $ curl -v -XOPTIONS http://homeassistant.local:8123/api/webhook/bla?OPTIONS
+    *   Trying ::1...
+    * TCP_NODELAY set
+    * Connected to homeassistant.local (::1) port 8123 (#0)
+    > OPTIONS /api/webhook/bla?OPTIONS HTTP/1.1
+    > Host: homeassistant.local:8123
+    > User-Agent: curl/7.64.1
+    > Accept: */*
+    >
+    < HTTP/1.1 403 Forbidden
+    < Content-Type: text/plain; charset=utf-8
+    < Content-Length: 76
+    < Date: Fri, 26 Feb 2021 10:26:32 GMT
+    < Server: Python/3.8 aiohttp/3.7.3
+    <
+    * Connection #0 to host homeassistant.local left intact
+    CORS preflight request failed: origin header is not specified in the request* Closing connection 0
+
+Если добавить необходимые заголовки, то запрос проходит успешно, но триггер не стрелает.
+
+    $ curl -v -XOPTIONS -H "Origin: homeassistant.local" -H "Access-Control-Request-Method: OPTIONS" http://homeassistant.local:8123/api/webhook/bla?OPTIONS
+    *   Trying ::1...
+    * TCP_NODELAY set
+    * Connected to homeassistant.local (::1) port 8123 (#0)
+    > OPTIONS /api/webhook/bla?OPTIONS HTTP/1.1
+    > Host: homeassistant.local:8123
+    > User-Agent: curl/7.64.1
+    > Accept: */*
+    > Origin: homeassistant.local
+    > Access-Control-Request-Method: OPTIONS
+    >
+    < HTTP/1.1 200 OK
+    < Access-Control-Allow-Origin: homeassistant.local
+    < Access-Control-Allow-Methods: OPTIONS
+    < Content-Length: 0
+    < Content-Type: application/octet-stream
+    < Date: Fri, 26 Feb 2021 10:26:43 GMT
+    < Server: Python/3.8 aiohttp/3.7.3
+    <
+    * Connection #0 to host homeassistant.local left intact
+    * Closing connection 0
+
+Вполне возможно что это баг в Home Assistant, должен работать только POST запрос.
+
+## Обращнеие к несуществующим вебхукам
+
+Если отправить запрос на адрес вебхука который не существует, то запрос завериться успешно:
+
+    curl -XPOST http://localhost:8123/api/webhook/test
+
+Но в логе будет ошибка `Received message for unregistered webhook test from 172.17.0.1`:
+
+    ![](https://upload.bessarabov.ru/bessarabov/YMsDm9UyOXetTXt2eqc7gIUMElY.png)
+
+## Исходный код триггера
+
+Python код триггера `webhook` находится на GitHub — [https://github.com/home-assistant/core/blob/dev/homeassistant/components/webhook/trigger.py](https://github.com/home-assistant/core/blob/dev/homeassistant/components/webhook/trigger.py)
+
+## Переменная `trigger`
+
+После того как триггер сработал в блоках `condition` и `action` становится доступна специальная переменная
+с именем `trigger`.
+
+Пример автоматизации которая записывает в лог содержимое переменной:
+
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: webhook
+      webhook_id: bla
+    action:
+      service: system_log.write
+      data:
+        message: "{{ trigger }}"
+```
+---
+```markdown
+
+После выполнения запроса:
+
+    curl -XPOST http://homeassistant.local:8123/api/webhook/bla
+
+В логе можно будет увидеть:
+
+![](https://upload.bessarabov.ru/bessarabov/4rNnIO3ruX3sq2bQ0CHWfgdsNyY.png)
+
+    {
+        'platform': 'webhook',
+        'webhook_id': 'bla',
+        'data': <MultiDictProxy()>,
+        'query': <MultiDictProxy()>,
+        'description': 'webhook'
+    }
+
+### `trigger.json`
+
+В том случае если в запросе передается заголовок `Content-Type: application/json`,
+в переменной `trigger` появляется поле `json`, значение которого — это разобранный json из тела сообщения:
+
+    curl -XPOST -H "Content-Type: application/json" -d '{"a":1,"b":2}' http://localhost:8123/api/webhook/bla
+
+Содержимое лога:
+
+    {
+        'platform': 'webhook',
+        'webhook_id': 'bla',
+        'data': <MultiDictProxy('a': '1', 'b': '2')>,
+        'query': <MultiDictProxy()>,
+        'description': 'webhook'
+    }
+
+В том случае если тело запроса невалидноый json, то в логе будет ошибка `Error processing webhook bla`.
+
+![](https://upload.bessarabov.ru/bessarabov/Sr8CY5QwiwlApcmaeaZYPwysgOw.png)
+
+    Logger: homeassistant.components.webhook
+    Source: components/webhook/trigger.py:25
+    Integration: Webhook (documentation, issues)
+    First occurred: 2:20:16 PM (1 occurrences)
+    Last logged: 2:20:16 PM
+
+    Error processing webhook bla
+    Traceback (most recent call last):
+      File "/usr/src/homeassistant/homeassistant/components/webhook/__init__.py", line 96, in async_handle_webhook
+        response = await webhook["handler"](hass, webhook_id, request)
+      File "/usr/src/homeassistant/homeassistant/components/webhook/trigger.py", line 25, in _handle_webhook
+        result["json"] = await request.json()
+      File "/usr/local/lib/python3.8/site-packages/aiohttp/web_request.py", line 614, in json
+        return loads(body)
+      File "/usr/local/lib/python3.8/json/__init__.py", line 357, in loads
+        return _default_decoder.decode(s)
+      File "/usr/local/lib/python3.8/json/decoder.py", line 337, in decode
+        obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+      File "/usr/local/lib/python3.8/json/decoder.py", line 353, in raw_decode
+        obj, end = self.scan_once(s, idx)
+    json.decoder.JSONDecodeError: Expecting ',' delimiter: line 1 column 13 (char 12)
+
+### `trigger.query`
+
+Одно из полей в переменной `trigger` — это `query`. Там находится разобранные параметры урла.
+
+В урле один и тот же ключ может быть большее чем один раз. Поэтому `trrigger.query` это не словарь,
+а специальный объект `MultiDictProxy` в котором могут быть одинаковые ключи.
+
+Автоматизация:
+
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: webhook
+      webhook_id: bla
+    action:
+      service: system_log.write
+      data:
+        message: "{{ trigger }} b: {{ trigger.query.b }} b: {{ trigger.query.getall('b') }}"
+```
+---
+```markdown
+
+Запрос:
+
+    curl -XPOST 'http://homeassistant.local:8123/api/webhook/bla?a=1&b=2&c&b=4'
+
+В логе будет:
+
+![](https://upload.bessarabov.ru/bessarabov/NM004X5S41-01lgw6vdCRa1FHJo.png)
+
+    {'platform': 'webhook', 'webhook_id': 'bla', 'data': <MultiDictProxy()>, 'query': <MultiDictProxy('a': '1', 'b': '2', 'c': '', 'b': '4')>, 'description': 'webhook'} b: 2 b: ['2', '4']
+
+Т.е. при обращении к `{{ trigger.query.b }}` будет взято первое значение `b`, но есть метод `getall` с помощью которого можно получить список всех значений `b`.
+
+### `trigger.data`
+
+В переменной `trigger` находится поле `data`. Там находятся разобранное тело сообщения.
+Тело сообщения разбирается точно так же как и url:
+
+    curl -XPOST -d 'a=1&b=2' http://localhost:8123/api/webhook/bla
+
+В логе будет:
+
+    {
+        'platform': 'webhook',
+        'webhook_id': 'bla',
+        'data': <MultiDictProxy('a': '1', 'b': '2')>,
+        'query': <MultiDictProxy()>,
+        'description': 'webhook'
+    }
+```
