@@ -1,0 +1,61 @@
+```meta
+{
+    "title" : "Как получить токен для API Home Assistant"
+}
+```
+---
+```markdown
+# Как получить токен для API Home Assistant
+
+Для работы с API Home Assistant нужно получить токен.
+
+Сначала нужно зайти в раздел http://IP:8123/profile Для того чтобы попасть в этот раздел
+можно либо ввести этот адрес, либо нажать на кнопку в левом нижнем углу инерфейфса Home Assistant:
+
+![](https://upload.bessarabov.ru/bessarabov/F8WwvrP8xKRlf4jSwqQk6LAF1cE.png)
+
+На этой странице нужно домотать до самого низа, в разделе "Long-Lived Access Tokens" будет
+кнопка "Create token":
+
+![](https://upload.bessarabov.ru/bessarabov/ekHN6GMP5umbyeFRsM63zLOKFs4.png)
+
+Появляется окошко для ввода имени для токена.
+
+![](https://upload.bessarabov.ru/bessarabov/Ya0rnek4uO9E8_gloa2b2nQIP2g.png)
+
+Имя токена ни на что не влияет, можно ввести что угодно.
+
+В некоторых ситуациях имеет смысл создавать несколько токенов, вот когда токенов много имеет смысл
+назавать им разные имена котоыре объясняют где конктретно этот токен используется. Но пока токен один его можно
+назвать как угодно:
+
+![](https://upload.bessarabov.ru/bessarabov/KqBqgQT5DlfVwfhW4w_UfLt4_dU.png)
+
+После ввода имени появляется сам токен — длинная строка разных символов (внимание, в окошке видна только часть строки).
+
+![](https://upload.bessarabov.ru/bessarabov/epcCYdwbu9r0MVGQcbQP_Npn4NA.png)
+
+Нужно скопировать этот токен и сохранить его куда-нибудь. Интерфейс Home Assistant покажет токен только один раз.
+После закрытия окошка с токеном его уже никак нельзя будет увидеть в интерфейсе. Если вы потеряли значение токена,
+то его уже не восстановить. Удалйте этот токен в интерфейсе и создавайте новый.
+
+Вот пример токена который может выдать система:
+
+    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MTE0MGY0ZmNlZDM0YmFlOTRjYjk5MWFkNjhhZTFiYSIsImlhdCI6MTYxNTQ1MjM5OCwiZXhwIjoxOTMwODEyMzk4fQ.3W6ySXMznyFA8JZZbBfLwuk7VXohXyQeiNVml0tq0L0
+
+После создания токена информация о нем появляется в интерфейсе:
+
+![](https://upload.bessarabov.ru/bessarabov/tSl9bSRb1lgo3bTh3UHjEGBrv4s.png)
+
+А дальше этот токен можно использовать для работы с API. Строку с токеном ножно поместить
+в заголовок Authorization, а перед строкой написать "Bearer ":
+
+    Authorization: Bearer eyJ0eXAi...
+
+Вот пример использования curl для обращения к API:
+
+    $ curl -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MTE0MGY0ZmNlZDM0YmFlOTRjYjk5MWFkNjhhZTFiYSIsImlhdCI6MTYxNTQ1MjM5OCwiZXhwIjoxOTMwODEyMzk4fQ.3W6ySXMznyFA8JZZbBfLwuk7VXohXyQeiNVml0tq0L0" http://localhost:8123/api/; echo ''
+    {"message": "API running."}
+    $
+
+```
