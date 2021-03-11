@@ -1,0 +1,98 @@
+```meta
+{
+    "title" : "Как создать на iPhone иконку которая запускает выполнение действия в Home Assistant"
+}
+```
+---
+```markdown
+# Как создать на iPhone иконку которая запускает выполнение действия в Home Assistant
+
+С помощью приложения Shortcuts на iPhone можно создать иноку на рабочий стол, которая будет
+выполнять какое-то действия в Home Assistant. Включать или выключать свет, включать/выключать
+какой-то switch, запускать скрипт или автоматизацию.
+
+Для этого используется API Home Assistant. В том случае если Home Assistant у вас доступен
+снаружи, то вы сможете использовать эту иконку для управления
+HA из любой точки мира где есть интернет. Если HA у вас работае только внутри сети, то
+эта иконка будет работать только если ваш телефон находится в той же сети что и сервер HA.
+
+Для того чтобы сделать такую инкону нужно уметь работат с сервисами в Home Assistant и знать
+какой сервис с какими параметрами вы хотите запускать при нажатии на кнопку в iPhone.
+
+В данном тексте создается иконка которая переключает свет. Используется сервис light.toggle,
+с данными "entity_id" : "light.lamp"
+
+Для работы с API Home Assistant [нужно получить токен](/wiki/home-assistant/how-to-get-token-for-api).
+
+Токен — это очень длинная строка, вида:
+
+    eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MTE0MGY0ZmNlZDM0YmFlOTRjYjk5MWFkNjhhZTFiYSIsImlhdCI6MTYxNTQ1MjM5OCwiZXhwIjoxOTMwODEyMzk4fQ.3W6ySXMznyFA8JZZbBfLwuk7VXohXyQeiNVml0tq0L0
+
+После того как у вас есть такая строка можно настраивать iPhone.
+
+Сначала нужно запустить приложение Shortcuts:
+
+![](https://upload.bessarabov.ru/bessarabov/Nq5NlG8A4_vZe6MGKmNctuRvN5I.png)
+
+И в этом приложении нажать на плюс в правом вехрнем углу чтобы начать создание нового шортката:
+
+![](https://upload.bessarabov.ru/bessarabov/tqdXxhr1uK7IDtAnubRi4NReEo4.png)
+
+Появится новый пустой шорткат:
+
+![](https://upload.bessarabov.ru/bessarabov/IhtnKxRlKoIiJGGgLywCjNltT-w.png)
+
+Нужно нажать на кнопку "Add Action" и в появившемся окошке нужно ввести "http" в строку поиска:
+
+![](https://upload.bessarabov.ru/bessarabov/ynTvoMfNWe3Qo1RmeFd0WqaEFtQ.png)
+
+Выбрать "Get Content of URL":
+
+![](https://upload.bessarabov.ru/bessarabov/hmhmDqRaqqJHgY_cx5NmKgzH2DE.png)
+
+После этого нужно нажать на URL и ввести адрес сайта HA плюс /api/services/<domain>/<service>
+
+Я хочу использовать сервис light.toggle, так что я ввожу https://example.com/api/services/light/toggle
+
+![](https://upload.bessarabov.ru/bessarabov/zP53vSo1_d1VPBzIhhyMzO0FDxA.png)
+
+После этого нужно нажать на кнопку "Show More":
+
+![](https://upload.bessarabov.ru/bessarabov/jbIBrBB4vFk0qo7pikZ_qHVi-aU.png)
+
+Нажать на кнопку "Method" и выбрать POST:
+
+![](https://upload.bessarabov.ru/bessarabov/pwH5QLlTMMM4IPC5mxENEAHn45c.png)
+
+Открыть раздел Headers и ввести туда:
+
+    Authorization
+
+    Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiI0MTE0MGY0ZmNlZDM0YmFlOTRjYjk5MWFkNjhhZTFiYSIsImlhdCI6MTYxNTQ1MjM5OCwiZXhwIjoxOTMwODEyMzk4fQ.3W6ySXMznyFA8JZZbBfLwuk7VXohXyQeiNVml0tq0L0
+
+(набивать руками это нереально, я сбросил себе этот текст на почту, а на телефоне уже скопировал из приложения почта в Shortcuts)
+
+![](https://upload.bessarabov.ru/bessarabov/6AC43hYS0NKYTB6kVdVYjSd-dpQ.png)
+
+После раздела Request Body находится кнопка "Add new field". Ее нужно нажать и выбрать Text:
+
+![](https://upload.bessarabov.ru/bessarabov/l26x3DP5J4Nc5tQ2k1cErlP7Ivs.png)
+
+И ввести параметры к сервисы. В моем случае — это entity_id и light.lamp (без кавычек)
+
+![](https://upload.bessarabov.ru/bessarabov/1tulOUc693wsPM0vo6b2DyN3iD0.png)
+
+На этом создание шортката практически закончено. Нужно нажать на кнопку Next в правом верхнем углу.
+После этого ввести название, выбрать иконку и ее цвет.
+
+![](https://upload.bessarabov.ru/bessarabov/00eJ-1QdikkpXo7kV58-jJLwwUU.png)
+
+Теперь если нажать на кнопку Свет в приложении Shortcuts, то light.lamp будет включаться
+и выключаться. Если зайти в настройки этого шортката (кнопка с тремя точками в правом вехрнем углу),
+то можно будет нажать на кнопку "Add to Home Screen", чтобы создать на рабочем столе iPhone
+иконку которая выполняет действие.
+
+![](https://upload.bessarabov.ru/bessarabov/eaT7xiRwVdFIyO4FbWywGI4ka2Q.png)
+
+![](https://upload.bessarabov.ru/bessarabov/bz_Eq1t0FznIwJe8-2zCAOORRps.png)
+```
