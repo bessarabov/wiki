@@ -50,7 +50,7 @@ HA из любой точки мира где есть интернет. Есл�
 
 ![](https://upload.bessarabov.ru/bessarabov/hmhmDqRaqqJHgY_cx5NmKgzH2DE.png)
 
-После этого нужно нажать на URL и ввести адрес сайта HA плюс /api/services/<domain>/<service>
+После этого нужно нажать на URL и ввести адрес сайта HA плюс /api/services/DOMAIN/SERVICE
 
 Я хочу использовать сервис light.toggle, так что я ввожу https://example.com/api/services/light/toggle
 
@@ -78,7 +78,7 @@ HA из любой точки мира где есть интернет. Есл�
 
 ![](https://upload.bessarabov.ru/bessarabov/l26x3DP5J4Nc5tQ2k1cErlP7Ivs.png)
 
-И ввести параметры к сервисы. В моем случае — это entity_id и light.lamp (без кавычек)
+И ввести параметры к сервису. В моем случае — это entity_id и light.lamp (без кавычек)
 
 ![](https://upload.bessarabov.ru/bessarabov/1tulOUc693wsPM0vo6b2DyN3iD0.png)
 
