@@ -1,0 +1,106 @@
+```meta
+{
+    "title" : "Как разобрать розетку BlitzWolf BW-SHP8 и подключиться к пинам для перепрошивки"
+}
+```
+---
+```markdown
+# Как разобрать розетку BlitzWolf BW-SHP8 и подключиться к пинам для перепрошивки
+
+У меня есть несколько розеток BlitzWolf BW-SHP8 (покупал на AliExpress [в официальном магазине BlitzWolf](https://s.click.aliexpress.com/e/_d8AvB1A)).
+Это встраиваемые розетки, рассчитаны на работу до 16 ампер, они умеют замерять потребление.
+Сначала эти розетки можно было перепрошить на альтернативную прошивку (ESPHome, Tasmota) по воздуху
+с помощью программы [tuya-convert](https://github.com/ct-Open-Source/tuya-convert). Но начиная где-то с середины 2020 года
+розетки стали продаваться с прошивкой которую нельзя заменить с помощью tuya-convert.
+
+Для того чтобы перепрошить розетку нужно ее разобрать и подпаяться к нужным пинам.
+
+Тут я рассказываю как я разобрал эту розетку и куда подпаивался для перепрошивки.
+
+![](https://upload.bessarabov.ru/bessarabov/8HNXE8quxkyb01Yh-gQphffq6mA.jpg)
+
+Первое что нужно сделать — осоединить крышку от розетки. Для этого нужно отодвинуть
+пластмассовые защелки (я для этого использовал отвертку):
+
+![](https://upload.bessarabov.ru/bessarabov/p2b5iHo9VYCIjcHEUTfLKarJg_g.jpg)
+
+Дальше я снял металлическую пластинку (отогнул пластиковые защелки):
+
+![](https://upload.bessarabov.ru/bessarabov/Hbc-52H0ax2SuvWsba8a9CyIE5Q.jpg)
+
+Маленькая платка со светодиодом и кнопкой, держится на металлической рамке
+с помощью винта. Винт нужно открутить:
+
+![](https://upload.bessarabov.ru/bessarabov/eTeZU5l9M-unrWTBd29XhenVi2k.jpg)
+
+Дальше снимает пластину заземления. Для этого откручиваем один винт:
+
+![](https://upload.bessarabov.ru/bessarabov/5b3D2IAUW1r1xPI50cx8yexAJxA.jpg)
+
+Следующее — откручиваем три винта которые держат плату:
+
+![](https://upload.bessarabov.ru/bessarabov/rzIKa0SDfRjnBgQdGLLUeiqwXJ0.jpg)
+
+![](https://upload.bessarabov.ru/bessarabov/ZaAu7HFdGKGBZ7LC5YMVX4CIJag.jpg)
+
+Потом нужно открутить 3 винта которые зажимаются контакты. Два с одной стороны (фаза и ноль),
+один (земля) с другой стороны:
+
+![](https://upload.bessarabov.ru/bessarabov/8u0GvAwG7TlXnaXUa8LYUXRYbm4.jpg)
+
+![](https://upload.bessarabov.ru/bessarabov/oYZL9IRYQ3S5uWtA1UwPW_WZtKE.jpg)
+
+После этого можно достать плату из корпуса. Для этого я вставил небольшую
+отвертку в отверстие для кабеля и немного нажал:
+
+![](https://upload.bessarabov.ru/bessarabov/BOqyTqn6mB9mDllje7ft08ZmxoU.jpg)
+
+Вот что находится внутри:
+
+![](https://upload.bessarabov.ru/bessarabov/cUjsw9FViDADGnexjlKLb6-tGnY.jpg)
+
+![](https://upload.bessarabov.ru/bessarabov/RXdQw69csnmy2DMHiRSjwxtyBJo.jpg)
+
+![](https://upload.bessarabov.ru/bessarabov/GHSb4mU9b1jxdTTwGhUUfVZgz_0.jpg)
+
+На верхней части платы есть подписи gnd, 3v3, rx, tx, но я подпаивался напрямую
+к чипу (я попробовал прозвонить эти пины, у меня сложилось впечатление
+что они не то что нужно)
+
+К разъемам чипа нужно припаять провода.
+
+ * 3v3 — питание — красный провод
+ * gnd — земля — черный провод
+ * rx — прием — желтый провод
+ * tx — передача — зеленый провод
+
+Я паял дюпоны папа-папа. Сначала я попробовал припаять именно клемму от дюпона —
+вообще не паялось. Срезал с одной стороны проводов клеммы, голый провод
+отлично припаялся.
+
+![](https://upload.bessarabov.ru/bessarabov/DOrCVaGsFFWoagrFw13F4YQXZ-c.jpg)
+
+Кроме этого нужно еще припаять провод к точке на плате IO0 (этот провод нужно
+соединить с землей для того чтобы можно было залить прошивку на чип):
+
+![](https://upload.bessarabov.ru/bessarabov/63IQxILDKrxjbAkGfZVlklRux3Y.jpg)
+
+Вот как выглядит устройство к которому припаяны все нужные провода:
+
+![](https://upload.bessarabov.ru/bessarabov/8mJwkPYKquo6nNKarYh0sSqBqbw.jpg)
+
+И вот так все это соединяется с программатором (синий кабель нужно соединить с землей):
+
+![](https://upload.bessarabov.ru/bessarabov/y5QyqrXoPp__rLT2FmdHDHxa8dI.jpg)
+
+![](https://upload.bessarabov.ru/bessarabov/762Ne6tkOVKXtLMmggUyFOA3RUc.jpg)
+
+А дальше стандартным способом туда заливается нужная прошивка. Я использовал ESPHome.
+
+![](https://upload.bessarabov.ru/bessarabov/WlO8Yf-2g08wiuE1Vt39QXWJ1x8.jpg)
+
+
+
+
+
+```
