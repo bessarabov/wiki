@@ -69,7 +69,7 @@ Home Assistant.
 
 Все требования описаны в документе [https://github.com/home-assistant/architecture/blob/master/adr/0014-home-assistant-supervised.md](https://github.com/home-assistant/architecture/blob/master/adr/0014-home-assistant-supervised.md).
 
-Главное требование — операционная система Linux обязательно должна быть Debian Linux Debian 10 aka Buster.
+Главное требование — операционная система Linux обязательно должна быть Debian 10 aka Buster.
 Другие версии Linux официально не поддерживаются. Поддержка отсутствет даже для тех Linux дистрибутивов которые сильно похожи на Debian (например, Rasbperry OS, Ubuntu).
 
 Прямо сейчас этот способ установки работает и на других операционных системах (Rasbperry OS, Ubuntu),
@@ -78,7 +78,9 @@ Home Assistant.
 Так что скорее всего, если ставить Home Assistant этим способом, то стоит соблюдать все требования,
 или использовать другой способ установки.
 
-Вот [описание как установить Home Assistant этим способом на Raspbian](https://ivan.bessarabov.ru/blog/how-to-install-home-assistant-on-raspbian-on-raspberry-pi-4) (но правильнее устанавливать на Debian 10)
+Вот [инструкция как установить Home Assistant на Debian](/wiki/home-assistant/debian-install)
+
+А вот [описание как установить Home Assistant этим способом на Raspbian](https://ivan.bessarabov.ru/blog/how-to-install-home-assistant-on-raspbian-on-raspberry-pi-4) (но правильнее устанавливать на Debian)
 
 ## Home Assistant Container
 

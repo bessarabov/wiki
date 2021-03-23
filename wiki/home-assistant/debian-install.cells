@@ -1,0 +1,124 @@
+```meta
+{
+    "title" : "Установка Home Assistant Supervised на Debian Linux"
+}
+```
+---
+```markdown
+# Установка Home Assistant Supervised на Debian Linux
+
+Есть много разных способов как можно установить Home Assistant ([список](/wiki/home-assistant/install)).
+
+Один из способов — это установка Home Assistant с супервизором на компьютер на котором уже
+работает Linux. Это официально поддерживаемый способ установки, но нужно очень точно следовать
+всем рекомендациям. Если что-то сделать не совсем так, то Home Assistant
+переходит в режим "You are running an unsupported installation." или даже в
+"Your installation is running in an unhealthy state", а в этом режиме Home
+Assistant работает исключительно плохо.
+
+Главное требование — операционная система Linux обязательно должна быть Debian 10 aka Buster.
+Другие операционные системы не поддерживаются.
+
+Этот способ установки называется "Home Assistant Supervised".
+
+В этом тексте рассказывается как установить Home Assistant на компьютер на котором уже
+установлена операционная система Debian Linux.
+
+## Установка Docker
+
+Первое что нужно сделать — это установить Docker.
+
+Для этого нужно перейти в режим суперпользователя (для этого нужно набрать команду 'su -' в консоли и ввести пароль).
+
+![](https://upload.bessarabov.ru/bessarabov/COclKEHd5k87m-Z4dL7dbBzRKVc.png)
+
+Дальше нужно выполнить команду, которая обновит информацию про пакеты и установит компоненты которые нужны для установки и работы докера:
+
+    apt-get update && apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+
+Эта команда работает несколько минут — она скачивает из интернета указанные пакеты и устанавливает их на систему.
+
+Вот [скриншот успешно выполненной команды](https://upload.bessarabov.ru/bessarabov/pyalcrzHPEgWs3d-wAcNrNDwE8o.png).
+
+Дальше нужно запустить команду которая добавит нужный ключ в систему:
+
+    curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+
+Результат команда должна быть строчка "OK".
+
+Следующее действие — нужно добавить добавить в систему новый репозиторий в котором находятся пакеты докера:
+
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+
+(команда должна отработать практически мгновенно, ничего на экран не выведет)
+
+А дальше нужно запустить команду которая обновит информацию про пакеты и установит докер:
+
+    apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io
+
+После того как эта команда отработала можно проверить что докер успешно установлен с помощью команды
+
+    docker ps -a
+
+На экране должна появиться строчка которая начинается с "CONTAINER ID":
+
+![](https://upload.bessarabov.ru/bessarabov/buEhlyt9o9iFFDlTin4DZQRrfU4.png)
+
+## Установка дополнительного софта
+
+В режиме суперпользователя нужно выполнить команду:
+
+    apt-get install -y network-manager apparmor jq
+
+Это установит программы. Если это не сделать, то при установке Home Assistant будет ошибка вида:
+
+    [error] missing: network-manager apparmor jq
+
+![](https://upload.bessarabov.ru/bessarabov/GhwaboB4M6ffw8rztBTDmyLjA5o.png)
+
+## Установка Home Assistant
+
+Это нужно делать в режиме суперпользователя.
+
+Сначала нужно скачать файл в котором прописаны команды для установки:
+
+    curl -Lo installer.sh https://raw.githubusercontent.com/home-assistant/supervised-installer/master/installer.sh
+
+А дальше нужно запустить этот файл:
+
+    bash installer.sh
+
+Программа задаст вопрос
+
+    [info] Do you want to proceed with overwriting the /etc/network/interfaces file? [N/y]
+
+![](https://upload.bessarabov.ru/bessarabov/MdZT-xCSvcKCRMm221AnipMsgY8.png)
+
+Нужно на клавиатуре нажать клавишу "y" и нажать Enter.
+
+Установка происходит несколько минут. Вот что показывается на экране после успешной установки:
+
+![](https://upload.bessarabov.ru/bessarabov/e-20lBh-ww0p5sCMLkOOAy5N3FM.png)
+
+После этого можно зайти браузером на указанный адрес (в моем случае это был http://192.168.31.93:8123 )
+
+Сразу после установки будет показываться ошибка (в фоне происходит скачивание и установка нужных частей Home Assistant),
+но если зайти на эту же страницу через несколько минут, то будет уже текст "Preparing Home Assistant":
+
+![](https://upload.bessarabov.ru/bessarabov/pYwpSRYiV8tUwSzFhJka-Aky1p0.png)
+
+А еще через несколько минут появится окно первичной настройки Home Assistant.
+
+![](https://upload.bessarabov.ru/bessarabov/AinQ51s_ON_BTP8Un-NxyueFwQs.png)
+
+На этом установка Home Assistant завершена.
+
+## Проблемы при установке
+
+Если вы поставили все нужные пакеты, но все равно при запуске установки получаете ошибку:
+
+    [error] missing: apparmor
+
+Это значит что вы неправильно перешли в режим суперпользователя. Например, вы использовали команду "su", вместо правильной "su -".
+(технические подробности — при использовании "su" в $PATH не добавляется путь /sbin в котором лежит программа apparmor_parser)
+```
