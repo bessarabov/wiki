@@ -28,6 +28,7 @@
 
 Вот некоторые тексты которые тут есть:
 
+ * [Умный дом. Примеры использования](/wiki/smart-home-examples)
  * [Способы установки Home Assistant](/wiki/home-assistant/install)
  * [Настройка удаленного доступа в Home Assistant с помощью кастомного компонента Dataplicity](/wiki/home-assistant/remote-access/custom-component-dataplicity)
  * [Использование secrets.yaml в Home Assistant](/wiki/home-assistant/secrets)
