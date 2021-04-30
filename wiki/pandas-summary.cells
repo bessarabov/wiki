@@ -1,0 +1,97 @@
+```meta
+{
+    "title" : "Конспект про Pandas"
+}
+```
+---
+```markdown
+# Конспект про Pandas
+
+https://github.com/knathanieltucker/pandas-tutorial
+
+## Series - Pandas
+
+Видео: https://www.youtube.com/watch?v=HKVsVksViXo
+
+В Pandas есть две главные структуры для хранения данных:
+
+ * Series
+ * Dataframe
+
+В jupyter можно посмотреть справку с помощью вопросительного знака
+
+    pd.Series?
+
+Можно сравнить объекст Series с колонкой в Excel. Есть:
+
+ * данные
+ * индекс
+ * название
+
+Создать:
+
+    s1 = pd.Series(data=[5,3,4])
+    s2 = pd.Series([5,3,4])
+    s3 = pd.Series(dtype='object') # пустой
+
+    s4 = pd.Series(
+        np.random.randn(5),
+        index=['a','b','c','d','e'],
+        name="example")
+
+Обычно Series и Dataframe не создаются руками, а загружаются откуда-то извене,
+а вот различные преобразования Series и Dataframe использются очень часто.
+
+Поле name в Series может использоваться для того чтобы назвать колонку
+в случае создания Dataframe из Series (TODO — пример)
+
+Пример broadcasting. Указано только одно число, но оно будет
+размещено во всех позициях Series:
+
+    s = pd.Series(5, index=['a', 'c', 'd', 'e', 'f'])
+
+array-like properties:
+
+    s[0] # получить первый элемент
+
+slice:
+
+    s[:3]
+
+get actual underlying data:
+
+    s.values
+
+получить элементы по индексу
+
+    s['a']
+
+можно менять
+
+    s['a'] = 89
+    s[3] = 10
+
+достать несколько элементов из Series:
+
+    s[[4,3]]
+    s[[True,False,False,True,True]]
+
+    s[s>3]
+
+измнение нескольких значений
+
+    s[s>3] *= -1
+
+Операции
+
+    np.exp(s)
+    s.abs()
+    s.mean()
+
+Есть автокомплит в jupyter который показывает какие есть методы.
+
+При операциях над несколькими сериями легко можно получить NaN, если в сериях разные индексы
+
+    s + s[s>3]
+
+```
