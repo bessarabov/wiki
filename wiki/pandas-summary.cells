@@ -7,7 +7,9 @@
 ```markdown
 # Конспект про Pandas
 
-https://github.com/knathanieltucker/pandas-tutorial
+[https://www.youtube.com/c/DataTalks/videos](https://www.youtube.com/c/DataTalks/videos)
+
+[https://github.com/knathanieltucker/pandas-tutorial](https://github.com/knathanieltucker/pandas-tutorial)
 
 ## Series - Pandas
 
@@ -22,7 +24,7 @@ https://github.com/knathanieltucker/pandas-tutorial
 
     pd.Series?
 
-Можно сравнить объекст Series с колонкой в Excel. Есть:
+Объект Series сильно напоминает колонку в Excel. Есть:
 
  * данные
  * индекс
@@ -43,33 +45,34 @@ https://github.com/knathanieltucker/pandas-tutorial
 а вот различные преобразования Series и Dataframe использются очень часто.
 
 Поле name в Series может использоваться для того чтобы назвать колонку
-в случае создания Dataframe из Series (TODO — пример)
+в случае создания Dataframe из Series, пример:
+
+    df = pd.DataFrame(pd.Series([1,2,3],name="sample"))
 
 Пример broadcasting. Указано только одно число, но оно будет
 размещено во всех позициях Series:
 
     s = pd.Series(5, index=['a', 'c', 'd', 'e', 'f'])
 
-array-like properties:
-
-    s[0] # получить первый элемент
-
-slice:
-
-    s[:3]
-
 get actual underlying data:
 
     s.values
 
-получить элементы по индексу
+## Получить одно значение
+
+array-like properties:
+
+    s[0] # получить первый элемент
+
+получить элемент по индексу:
 
     s['a']
 
-можно менять
+## Получить несколько значений
 
-    s['a'] = 89
-    s[3] = 10
+slice:
+
+    s[:3]
 
 достать несколько элементов из Series:
 
@@ -78,7 +81,14 @@ get actual underlying data:
 
     s[s>3]
 
-измнение нескольких значений
+## Изменеие
+
+Одно значение:
+
+    s['a'] = 89
+    s[3] = 10
+
+измнение нескольких значений:
 
     s[s>3] *= -1
 
@@ -90,8 +100,88 @@ get actual underlying data:
 
 Есть автокомплит в jupyter который показывает какие есть методы.
 
+![](https://upload.bessarabov.ru/bessarabov/E76rAio1XVLQ8tQvImI_m3OYp4s.png)
+
 При операциях над несколькими сериями легко можно получить NaN, если в сериях разные индексы
 
     s + s[s>3]
 
+## DataFrames - Pandas
+
+Видео: [https://www.youtube.com/watch?v=KB-19V-cSs4](https://www.youtube.com/watch?v=KB-19V-cSs4)
+
+higly-dimentional data - different columns
+
+Dataframe is a combination of Series.
+
+Состоит из трех вещей:
+
+ * columns
+ * index
+ * data
+
+Будет NaN в колонке one:
+
+    d = { 'one': pd.Series([1,2],index=['a','b'],),
+        'two': pd.Series([4,5,6],index=['a','b','c'],),}
+    df = pd.DataFrame(d)
+    df
+
+Можно собрать из единственного значения (размножится на все строки) или np.array:
+
+    d = {'one' : 'Hellow',
+        'two' : np.array([1., 2., 3., 4.])}
+
+    df = pd.DataFrame(d)
+    df
+
+Можно получить колонки/индекс:
+
+    df.columns
+    df.index
+
+и можно их поменять:
+
+    df.columns = ['aa', 'bb']
+    df.index = ['a', 'b', 'c', 'd']
+
+Удалить колонку:
+
+    del df['aa']
+
+Создание новых колонок:
+
+    df['three'] = df['two'] + df['two']
+    df['four'] = 'four'
+    df['five'] = df['four'][:2]
+
+Получить данные.
+
+Получить Series из Dataframe:
+
+    df['one']
+
+Сделать новый Dataframe только из указанных колонок оригинального:
+
+    df[['five', 'two']]
+
+Получить одно значение с помощью loc - cначала указывается индекс, потом колонка
+
+    df.loc['a', 'two']
+
+Получить df с помощью loc:
+
+    df.loc['d':'a':-1, 'two':'three']
+
+iloc то же самое что и loc, но вместо имен использует номера позиций
+
+    df.iloc[1:3, 0]
+
+## DataFrame Functions - Pandas
+
+Видео: [https://www.youtube.com/watch?v=Z6RU_MFjevU](https://www.youtube.com/watch?v=Z6RU_MFjevU)
+
+
 ```
+
+
