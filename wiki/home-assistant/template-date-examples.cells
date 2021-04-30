@@ -77,4 +77,20 @@
 Пример результата:
 
     10 days
+
+## Значения last_updated в разных форматах и часовых поясах
+
+    {{ states.sensor['0x00158d00040df945_temperature'].last_updated }}
+    {{ states.sensor['0x00158d00040df945_temperature'].last_updated.strftime('%Y-%m-%d %H:%M:%S') }}
+    {{ as_timestamp(states.sensor['0x00158d00040df945_temperature'].last_updated) | timestamp_custom('%Y-%m-%d %H:%M:%S') }}
+
+Результат:
+
+    2021-04-30 08:51:07.797174+00:00
+    2021-04-30 08:51:07
+    2021-04-30 11:51:07
+
+Первая и вторая строчка возращают дату-время в часовом поясе UTC. Вариант с timestamp_custom()
+возвращает дату-время в часовом поясе Home Assistant.
+
 ```
