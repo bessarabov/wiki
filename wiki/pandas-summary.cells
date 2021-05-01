@@ -11,9 +11,12 @@
 
 [https://github.com/knathanieltucker/pandas-tutorial](https://github.com/knathanieltucker/pandas-tutorial)
 
+Упражнения — [https://github.com/guipsamora/pandas_exercises](https://github.com/guipsamora/pandas_exercises)
+(видео разбор этих упражнений — [https://www.youtube.com/watch?v=pu3IpU937xs&list=PLgJhDSE2ZLxaY_DigHeiIDC1cD09rXgJv](https://www.youtube.com/watch?v=pu3IpU937xs&list=PLgJhDSE2ZLxaY_DigHeiIDC1cD09rXgJv]
+
 ## Series - Pandas
 
-Видео: https://www.youtube.com/watch?v=HKVsVksViXo
+Видео: [https://www.youtube.com/watch?v=HKVsVksViXo](https://www.youtube.com/watch?v=HKVsVksViXo)
 
 В Pandas есть две главные структуры для хранения данных:
 
@@ -181,5 +184,31 @@ iloc то же самое что и loc, но вместо имен исполь
 
 Видео: [https://www.youtube.com/watch?v=Z6RU_MFjevU](https://www.youtube.com/watch?v=Z6RU_MFjevU)
 
+    df.copy()
+
+преобразовать колонку:
+
+    df.two.astype(np.int)
+
+transpose
+
+    df.T
+
+Очень удобно применять для того чтобы посмотреть на пример данных когда в dataframe очень много столбцов:
+
+    df.head(2).T
+
+Посмотреть на данные:
+
+    df.head()
+    df.tail()
+    df.sample() # какой-то случайный ряд
+    df.info()
+    df.describe(include='all')
+
+Настройки отображения:
+
+    pd.set_option('display.max_rows', 100)
+    pd.set_option('precision', 7)
 
 ```
