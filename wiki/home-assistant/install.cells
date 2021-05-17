@@ -21,8 +21,14 @@
 
  * Можно "в один клик" устанавливать разные дополнения
  * Появляется простая возможность делать бекапы системы
- * Супервизор проверяет что система работает корректно, например уведомоляет если заканчивается место
+ * Супервизор проверяет что система работает корректно, например уведомляет если заканчивается место
  * Появляются дополнительные сервисы hassio.*
+
+Есть сайт с официльной статистикой использования Home Assistant — [https://analytics.home-assistant.io](https://analytics.home-assistant.io).
+
+Вот статистика разных типов установок с этого сайта (скриншот сохранен 17 мая 2021 года):
+
+![](https://upload.bessarabov.ru/bessarabov/up-eGl5fS4yMyVSFhgNxCBffsek.png)
 
 ## Home Assistant OS — установка на хост
 
@@ -31,11 +37,23 @@
 
 Очень часто этот способ используют для того чтобы установить Home Assistant на Raspberry Pi.
 
-Из раздела "As an image for your device" страницы [https://www.home-assistant.io/hassio/installation/](https://www.home-assistant.io/hassio/installation/) нужно скачать образ.
-В этом образе находится не только Home Assistant, но еще и операционная система.
+Нужно скачать специальный файл. Этот файл — это образ в котором находится не только Home Assistant, но еще и операционная система.
+
+Вот несколько популярных образов:
+
+ * [Для Raspberry Pi 4](https://github.com/home-assistant/operating-system/releases/download/5.13/hassos_rpi4-64-5.13.img.xz)
+ * [Для Raspberry Pi 3 / 3b / 3b+](https://github.com/home-assistant/operating-system/releases/download/5.13/hassos_rpi3-64-5.13.img.xz)
+ * [Для NUC](https://github.com/home-assistant/operating-system/releases/download/5.13/hassos_intel-nuc-5.13.img.xz)
+
+Полный список всех образов [находится на GitHub](https://github.com/home-assistant/operating-system/releases/).
 
 Этот образ нужно залить на sd карту (в случае Raspberry Pi) или на жесткий диск (в случае Nuc).
-После этого нужно включить компьютер и вы получаете работающий Home Assistant.
+
+Для заливки образа на sd карту очень удобно использовать бесплатную программу balenaEtcher (ссылка — [https://www.balena.io/etcher/](https://www.balena.io/etcher/)).
+Есть версии этой программы под Windows, macOS и Linux.
+
+После того как образ залит на носитель, нужно подключить его к компьютеру, включить компьютер
+и через некоторое время вы получаете работающий Home Assistant.
 
 У этого способа установки есть особенность — вы получаете "черный ящик" Home Assistant полностью работает,
 но доступ к операционной системе на которой он работает очень ограничен.
@@ -48,7 +66,8 @@
 с Windows, macOs или Linux. На компьютере появляется вирутальная машина в которой работает
 Home Assistant.
 
-Нужно скачать образ из раздела "As a virtual appliance" страницы [https://www.home-assistant.io/hassio/installation/](https://www.home-assistant.io/hassio/installation/).
+Нужно сказчать файл с образом с [GitHub](https://github.com/home-assistant/operating-system/releases/).
+
 А дальше из этого образа нужно создать виртуальную машину. Это можно сделать, например с помощью VirtualBox.
 
  * Документация [Как установить Home Assistant в VirtualBox](https://ivan.bessarabov.ru/blog/how-to-install-home-assistant-in-virtualbox)
