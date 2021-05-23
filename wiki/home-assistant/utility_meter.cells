@@ -1,0 +1,176 @@
+```meta
+{
+    "title" : "Использование utility_meter в Home Assistant"
+}
+```
+---
+```markdown
+# Использование utility_meter в Home Assistant
+
+В системе Home Assistant есть специальный инструмент utility_meter.
+
+С помощью utility_meter Home Assistant может считать сколько набежало за период. Очень часто этот
+инструмент используется для того чтобы считать сколько кВт*ч было потрачено за день или месяц.
+Другое частое использование utility_meter — это подсчет сколько литров холодной/горячей воды было использовано за день/месяц.
+
+Вода и электричество — это самые частые вещи которые считаются с помощью utility_meter, но с его
+помощью можно считать все что угодно.
+
+## Пример использования
+
+У меня нÐ° ввод электричества в доме установлен датчик PZEM-004t ([подробности](https://ivan.bessarabov.ru/blog/pzem004t-home-assistant-esphome)).
+
+Благодаря этому у меня в Home Assistant есть сенсор sensor.pzem_004t_v3_energy значение которого — это накопленная энергия в кВт*ч.
+Это то сколько было израсходовано кВт*ч с момента установки устройства. Это значение всегда увеличивается.
+
+Значение сенсора sensor.pzem_004t_v3_energy это именно сколько набежало (кВт*ч), а не мгновенное потребление (кВт) (сенсор с мгновенным потреблением у меня тоже есть,
+но для utility_meter нужно не мгновенное потребление, а накопленное)
+
+![](https://upload.bessarabov.ru/bessarabov/kIRTEtDcGFI6o-MHXwxcFG0Nlz0.png)
+
+![](https://upload.bessarabov.ru/bessarabov/2XksBjLyS1gWM_lFMJ552_tMLvs.png)
+
+Этот сенсор нужно указать для utility_meter. Вот код configuration.yaml Home Assistant для подсчета сколько было потрачено за день:
+```
+---
+```yaml
+utility_meter:
+  daily_energy_pzem:
+    source: sensor.pzem_004t_v3_energy
+    cycle: daily
+```
+---
+```markdown
+Этот код создаст новый сенсор sensor.daily_energy_pzem, значение которого — сколько кВт*ч было израсходовано за сегодня:
+
+![](https://upload.bessarabov.ru/bessarabov/ROdm5pYCPicHS8PmKlQs-jR9R9c.png)
+
+Значение sensor.daily_energy_pzem растет в течении дня, а в 00:00:00 сбрасывается в ноль и начинает считаться заново.
+
+![](https://upload.bessarabov.ru/bessarabov/2XleU_8hliDXyBcE8vITJUDYk68.png)
+
+У этого сенсора есÑь атрибут last_period, значение этого атрибута — сколько utility_meter насчитал за прошлый период.
+Это utility_meter считает за день, так что в значении last_period содержится то сколько было потрачено за вчера:
+
+![](https://upload.bessarabov.ru/bessarabov/_5_A8SFurBm3LKJMtnzFXSgnRfw.png)
+
+## Создание нескольких utility_meter
+
+Вот пример кода configuration.yaml как создать два utility_meter, один который считает за день, второй — за месяц.
+```
+---
+```yaml
+utility_meter:
+
+  daily_energy_pzem:
+    source: sensor.pzem_004t_v3_energy
+    cycle: daily
+
+  monthly_energy_pzem:
+    source: sensor.pzem_004t_v3_energy
+    cycle: monthly
+```
+---
+```markdown
+
+## Возможные значения для cycle
+
+В описании utility_meter обязательно нужно указатÑ cycle — за какой период utility_meter будет считать.
+(то как часто он будет сбрасываться в ноль). Чаще всего используется daily и monthly, но есть много
+вариантов как часто utility_meter будет сбрасывать в ноль:
+
+ * quarter-hourly — каждые 15 минут
+ * hourly — раз в час
+ * daily — раз в день
+ * weekly — раз в неделю
+ * monthly — раз в месяц
+ * bimonthly — раз в два месяца
+ * quarterly — раз в квартал
+ * yearly — раз в год
+
+## Проблема с переключением
+
+Сенсор созданный с помощью utility_meter считает сколько набежало, а в определенный момент сбрасывает в ноль
+и начинает считать заново. Например, при использовании cycle: daily сброс будет происходить каждый день
+в 00:00:00.
+
+В том случае если в момент сброса Home Assistant не работает (например, сервер выключен или ровно в этот
+момент сервер перезагружается), то сброса уже не произойдет. HA продолжит дальше суммировать все в
+этот сенсор и сбросит в ноль только в следующий раз.
+
+## Долговременное хранение данных
+
+Сенсоры которые создает utility_meter хранит информацию только за текущий период (находится в state сенсора)
+и данные за прошлый период (находятся в атрибуте last_period). Встроенными средствами Home Assistant
+не очень удобно сделать хранение и отображение Ð´анных за много периодов. Например, показать
+сколько были израсходовано кВт*ч за каждый день месяца. Я пришел к тому что с помощью utility_meter
+считаю только данна по дням, а дальше сохраняю эти данные в табличку Google Sheets.
+([Подробности как это сделано](https://ivan.bessarabov.ru/blog/saving-data-from-home-assistant-to-google-sheets)).
+
+## Тарифы
+
+В некоторых ситуациях нужно по разному считать в зависимости от времени.
+Например, если используется многотарифные счетчики электричества.
+
+Вот что нужно написать в configuration.yaml для того чтобы считать два тарифа:
+
+```
+---
+```yaml
+utility_meter:
+
+  daily_energy_pzem_tariff:
+    source: sensor.pzem_004t_v3_energy
+    cycle: daily
+    tariffs:
+      - day
+      - night
+```
+---
+```markdown
+
+Этот код создает два сенсора:
+
+ * sensor.daily_energy_pzem_tariff_day
+ * sensor.daily_energy_pzem_tariff_night
+
+Плюс создается сущность utility_meter.daily_energy_pzem_tariff
+
+Если оставить только такой код, то данные все время будут записывать в
+первый сенсор, sensor.daily_energy_pzem_tariff_day.
+
+Для того чтобы менять в какой сенсор будут накапливаться данные нужно
+еще написать автоматизацию. Вот пример который используется у меня
+С помощью [time триггера](/wiki/home-assistant/trigger/time) происходит
+перещелкивание тарифа:
+
+```
+---
+```yaml
+automation:
+  - alias: Set day tariff
+    trigger:
+      - platform: time
+        at: "07:00:00"
+    action:
+      - service: utility_meter.select_tariff
+        entity_id: utility_meter.daily_energy_pzem_tariff
+        data:
+          tariff: day
+
+  - alias: Set night tariff
+    trigger:
+      - platform: time
+        at: "23:00:00"
+    action:
+      - service: utility_meter.select_tariff
+        entity_id: utility_meter.daily_energy_pzem_tariff
+        data:
+          tariff: night
+```
+---
+```markdown
+## Документация
+
+[Официальная документация utility_meter на английском языке](https://www.home-assistant.io/integrations/utility_meter/)
+```
