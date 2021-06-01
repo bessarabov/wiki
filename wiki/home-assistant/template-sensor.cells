@@ -1,0 +1,103 @@
+```meta
+{
+    "title" : "Template сенсор в Home Assistant"
+}
+```
+---
+```markdown
+# Template сенсор в Home Assistant
+
+Иногда появлятеся необходимость создать в Home Assistant новый сенсор значение которого — это
+что-то расчетное. Например, нужно создать сенсор значение которого — это атрибут другой сущности
+или результат какой-то математическкой операции. Для это существует специальный инструмент — template сенсор — шаблонный сенсор.
+
+## Создать сенсор со значением атрибута
+
+У меня есть zigbee розетка [BlitzWolf BW-SHP13](https://ivan.bessarabov.ru/device/blitzwolf-bw-shp13).
+Она подключена в Home Assistant с помощью zigbee2mqtt. В Home Assistant автоматически появляется
+несколько разных сенсоров, например sensor.0x842e14fffe1393a2_power Вот как выглядит эта розетка
+в инструменте провери состояния:
+
+![](https://upload.bessarabov.ru/bessarabov/6O6B9Megm9ASLnWfG8Qf2IssVq8.png)
+
+Есть статус (в данный момент — это число 0), и куча разных атрибутов. Я хочу создать отдельный
+сенсор, значение которого — это значение атрибута energy. Для этого нужно написать вот такой
+конфиг:
+```
+---
+```yaml
+sensor:
+  - platform: template
+    sensors:
+      total_energy_pump:
+        unit_of_measurement: kWh
+        value_template: "{{ state_attr('sensor.0x842e14fffe1393a2_power', 'energy') }}"
+```
+---
+```markdown
+
+После перезпуска Home Assistant повяляется новый сенсор — sensor.total_energy_pump
+
+![](https://upload.bessarabov.ru/bessarabov/7onfdGca9R6BUT1LTaQJl_POF_U.png)
+
+## Рассчет абсолютной влажности
+
+Вот пример создания сенсора который рассчитывает абсолюную влажность в ванной.
+Этот сенсор использует значения с двух сенсоров (у меня эти данные отдает
+[Aqara climate sensor](https://ivan.bessarabov.ru/device/aqara-temperature-humidity-sensor)):
+
+ * sensor.0x00158d0004605ef0_humidity — данные про относительную влажность в ванной
+ * sensor.0x00158d0004605ef0_temperature — данные про температуру в ванной
+
+```yaml
+sensor:
+  - platform: template
+    sensors:
+      bathroom_abs_hum:
+        value_template: >-
+          {% set h, t = states('sensor.0x00158d0004605ef0_humidity') | float, states('sensor.0x00158d0004605ef0_temperature') %}
+          {% if not h or t == 'unknown' -%}
+            'unknown'
+          {%- else %}
+           {% set t = t | float %}
+           {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
+          {% endif %}
+        unit_of_measurement: "g/m³"
+```
+---
+```markdown
+
+## Перевести значение кВтч в рубли
+
+Если у вас есть сенсор в котором содержится данные про то сколько было израсходовано кВтч за сегодня,
+то можно посчитать сколько это стоило в рублях с помощью приблизительно следующих сенсоров.
+(Такой сенсор можно сделать с помощью [utility_meter](/wiki/home-assistant/utility_meter)).
+
+При использовании однотарифного учета:
+```
+---
+```yaml
+sensor:
+  - platform: template
+    sensors:
+      cost_today:
+        friendly_name: "Стоимость электричества сегодня"
+        icon_template: mdi:currency-rub
+        unit_of_measurement: "руб."
+        value_template: "{{ (states('sensor.daily_energy_pzem') | float * 3.96) | round(2) }}"
+```
+---
+```markdown
+При использовании двухтарифного учета:
+```
+---
+```yaml
+sensor:
+  - platform: template
+    sensors:
+      cost_today:
+        friendly_name: "Стоимость электричества сегодня"
+        icon_template: mdi:currency-rub
+        unit_of_measurement: "руб."
+        value_template: " {{ ( (states('sensor.daily_energy_pzem_tariff_night') | float) * 2.32 + (states('sensor.daily_energy_pzem_tariff_day') | float) * 4.55) | round(2) }}"
+```
