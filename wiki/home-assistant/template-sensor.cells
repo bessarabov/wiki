@@ -12,8 +12,8 @@
 или результат какой-то математическкой операции. Для это существует специальный инструмент — template сенсор — шаблонный сенсор.
 
 В Home Assistant активно используется инструмент для работы с шаблонами который называется Jinja2.
-Это не собственная разрабтка Home Assistant, это достаточно станадртный инструмент для языка
-программирования питон. Это достаточно большой и сложный инструмент, но в двух словах —
+Это не собственная разрабтка Home Assistant, это весьма привычная вещь для языка
+программирования питон. Jinja2 — достаточно большой и сложный инструмент, но в двух словах —
 нужно записывать выражение внутри фигурных скобок, вот пример:
 ```
 ---
@@ -37,7 +37,7 @@
 У меня есть zigbee розетка [BlitzWolf BW-SHP13](https://ivan.bessarabov.ru/device/blitzwolf-bw-shp13).
 Она подключена в Home Assistant с помощью zigbee2mqtt. В Home Assistant автоматически появляется
 несколько разных сенсоров, например sensor.0x842e14fffe1393a2_power Вот как выглядит этот сенсор
-в инструменте провери состояния:
+в инструменте проверки состояния:
 
 ![](https://upload.bessarabov.ru/bessarabov/6O6B9Megm9ASLnWfG8Qf2IssVq8.png)
 
@@ -62,7 +62,7 @@ sensor:
 
 ![](https://upload.bessarabov.ru/bessarabov/7onfdGca9R6BUT1LTaQJl_POF_U.png)
 
-Как только меняется атрибут energy значение нового сенсора автоматически меняется.
+Как только меняется атрибут energy у сенсора sensor.0x842e14fffe1393a2_power значение нового сенсора автоматически меняется.
 
 ## Рассчет абсолютной влажности
 
@@ -80,6 +80,7 @@ sensor:
   - platform: template
     sensors:
       bathroom_abs_hum:
+        unit_of_measurement: "g/m³"
         value_template: >-
           {% set h, t = states('sensor.0x00158d0004605ef0_humidity') | float, states('sensor.0x00158d0004605ef0_temperature') %}
           {% if not h or t == 'unknown' -%}
@@ -88,7 +89,6 @@ sensor:
            {% set t = t | float %}
            {{ (h*6.112*2.1674*e**((t*17.67)/(t+243.5))/(t+273.15))|round(2) }}
           {% endif %}
-        unit_of_measurement: "g/m³"
 ```
 ---
 ```markdown
@@ -125,5 +125,80 @@ sensor:
         friendly_name: "Стоимость электричества сегодня"
         icon_template: mdi:currency-rub
         unit_of_measurement: "руб."
-        value_template: " {{ ( (states('sensor.daily_energy_pzem_tariff_night') | float) * 2.32 + (states('sensor.daily_energy_pzem_tariff_day') | float) * 4.55) | round(2) }}"
+        value_template: "{{ ( (states('sensor.daily_energy_pzem_tariff_night') | float) * 2.32 + (states('sensor.daily_energy_pzem_tariff_day') | float) * 4.55) | round(2) }}"
+
+```
+---
+```markdown
+## Использование кавычек и других символов
+
+Шаблон записывается в поле value_template. Обычно когда шаблон помещается в одну строчку, то он записывается в кавычках:
+```
+---
+```yaml
+sensor:
+  - platform: template
+    sensors:
+      test:
+        value_template: "{{ 22 * 11 }}"
+```
+---
+```markdown
+Но если шаблон состоит из нескольких строк, то удобнее его записывать с помощью других символов.
+Очень часто используется вариант >-
+
+Разница между этими вариантами — это то как происходит работа с пробельными символами.
+Подрбности есть на сайте [https://yaml-multiline.info](https://yaml-multiline.info).
+
+Вот пример:
+```
+---
+```yaml
+sensor:
+  - platform: template
+    sensors:
+      t1:
+        value_template: >
+          {{ "раз" }}
+          {{ "два" }}
+          {{ "три" }}
+
+  - platform: template
+    sensors:
+      t2:
+        value_template: |
+          {{ "раз" }}
+          {{ "два" }}
+          {{ "три" }}
+```
+---
+```markdown
+
+![](https://upload.bessarabov.ru/bessarabov/NUVaxYfsLsFdmOEP-kPLtZedhtk.png)
+
+![](https://upload.bessarabov.ru/bessarabov/EkfqT6L3LjCUV_43tCagmtMQpkE.png)
+
+## Новый синтаксис
+
+В 2021 году в Home Assistant появился новый синтаксис для описания template сенсоров, вот пример:
+
+```yaml
+template:
+  - sensor:
+      - name: "Average temperature"
+        unit_of_measurement: "°C"
+        state: >
+          {% set bedroom = states('sensor.bedroom_temperature') | float %}
+          {% set kitchen = states('sensor.kitchen_temperature') | float %}
+
+          {{ ((bedroom + kitchen) / 2) | round(1) }}
+```
+---
+```markdown
+У этого способа описания есть большой недостаток — он не работает при использовании в packages.
+
+Про это постоянно пишут тикета на GitHub (например, вот [пример тикета](https://github.com/home-assistant/core/issues/49212)),
+но разработчки HA говорят что это не баг, а так и задуманно и похоже что не собираются это исправлять.
+
+У меня есть большие сомнения что нужно использовать новый синтаксис.
 ```
