@@ -23,23 +23,30 @@
 любое изменение текста.
 
 Мне очень интересна система Home Assistant и сейчас почти все тексты на этой
-вики — это информация про эту систему, но тут вполне могут появляться тексты
-и о чем-то другом.
+вики — это информация про эту систему, но тут есть тексты и на другие темы.
 
 Вот некоторые тексты которые тут есть:
 
  * [Умный дом. Примеры использования](/wiki/smart-home-examples)
+
+Home Assistant:
+
  * [Способы установки Home Assistant](/wiki/home-assistant/install)
  * [Настройка удаленного доступа в Home Assistant с помощью кастомного компонента Dataplicity](/wiki/home-assistant/remote-access/custom-component-dataplicity)
  * [Использование secrets.yaml в Home Assistant](/wiki/home-assistant/secrets)
  * [Использование папки www](/wiki/home-assistant/www-directory-local)
- * [sun триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/sun)
- * [homeassistant триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/homeassistant)
- * [mqtt триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/mqtt)
- * [time триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/time)
- * [time_pattern триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/time_pattern)
- * [webhook триггер в автоматизациях Home Assistant](/wiki/home-assistant/trigger/webhook)
+ * [Использование utility_meter](/wiki/home-assistant/utility_meter)
+ * [Template сенсор](/wiki/home-assistant/template-sensor)
  * [Список ресурсов про Home Assistant на русском языке](/wiki/home-assistant/russian-language)
+
+Триггеры в автоматизациях Home Assistant:
+
+ * [sun](/wiki/home-assistant/trigger/sun)
+ * [homeassistant](/wiki/home-assistant/trigger/homeassistant)
+ * [mqtt](/wiki/home-assistant/trigger/mqtt)
+ * [time](/wiki/home-assistant/trigger/time)
+ * [time_pattern](/wiki/home-assistant/trigger/time_pattern)
+ * [webhook](/wiki/home-assistant/trigger/webhook)
 
 [Полный список всех страниц на вики](/wiki/all-pages)
 ```
