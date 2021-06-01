@@ -28,10 +28,12 @@
 Вот некоторые тексты которые тут есть:
 
  * [Умный дом. Примеры использования](/wiki/smart-home-examples)
+ * [Как прокладывать электрику для умного дома](/wiki/smart-home-electricity)
 
 Home Assistant:
 
  * [Способы установки Home Assistant](/wiki/home-assistant/install)
+ * [Установка Home Assistant Supervised на Debian Linux](/wiki/home-assistant/debian-install)
  * [Настройка удаленного доступа в Home Assistant с помощью кастомного компонента Dataplicity](/wiki/home-assistant/remote-access/custom-component-dataplicity)
  * [Использование secrets.yaml в Home Assistant](/wiki/home-assistant/secrets)
  * [Использование папки www](/wiki/home-assistant/www-directory-local)
