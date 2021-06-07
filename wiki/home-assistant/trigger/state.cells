@@ -1,0 +1,193 @@
+```meta
+{
+    "title" : "state триггер в автоматизациях Home Assistant"
+}
+```
+---
+```markdown
+# state триггер в автоматизациях Home Assistant
+
+`state` — это один из триггеров которые можно использовать в автоматизациях Home Assistant ([список всех триггеров](/wiki/home-assistant/triggers)).
+
+С помощью этого триггера можно запустить автоматизацию при изменении какой-то сущности.
+
+Если вам нужна базовая информация про автоматизации в Home Assistant — прочитайте [этот текст](https://ivan.bessarabov.ru/blog/home-assistant-automations).
+
+## Пример
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: state
+      entity_id: sensor.my
+    action:
+      service: system_log.write
+      data:
+        message: "changed"
+```
+---
+```markdown
+Это автоматизация будет выполняться при изменении стейта sensor.my и при изменении любого из его атрибутов.
+
+## Параметр `entity_id`
+
+Триггеру `state` нужно обзязательно указать entity_id. Значнеие — это либо строка (в этом случае
+автоматизация запускается при изменении стейта или атрибутов указанной сущности):
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: state
+      entity_id: input_number.n1
+    action:
+      service: system_log.write
+      data:
+        message: "input_number has changed"
+```
+---
+```markdown
+либо список строк (в этом случае автоматизация запускается каждый раз когда меняется стейт
+или атрибуты любой из указанных сущностей):
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: state
+      entity_id:
+        - sensor.0x00158d0004605ef0_humidity
+        - sensor.0x00158d00045ad03f_humidity
+    action:
+      service: system_log.write
+      data:
+        message: "humidity has changed"
+```
+---
+```markdown
+А еще можно перечислить значение сущностей через запятую:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: state
+      entity_id: input_text.t1, input_text.t2
+    action:
+      service: system_log.write
+      data:
+        message: "input_text has changed"
+```
+---
+```markdown
+
+## Параметры `from` и `to`
+
+Триггеру `state` можно указать необязательные параметры `from` и `to`.
+
+Значения параметров `from` и `to` всегда стоит писать в кавычках.
+
+Если указано значение для параметра `to`, то автоматизация будет запусаться только если
+произошло изменения стейта и новое значение стейта стало такое как указано в `to`:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: state
+      entity_id: vacuum.rockrobo
+      to: "cleaning"
+    action:
+      service: system_log.write
+      data:
+        message: "Robot stated cleaning"
+```
+---
+```markdown
+Если указано значение для параметра `from`, то автоматизация будет запусаться только если
+произошло изменение стейта и значение стейта до изменения было такое как указано в `from`:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: state
+      entity_id: sensor.bathroom_temperature
+      to: "unavailable"
+    action:
+      service: system_log.write
+      data:
+        message: "Bathroom sensor is available"
+```
+---
+```markdown
+Значения параметров `from` и `to` может быть либо строка, либо список строк.
+В том случае если значение — это список, то автоматизация запуститься только
+если состояние стейта до/после изменения такое как перечислено в списке.
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: state
+      entity_id: sensor.player
+      to:
+        - "stopped"
+        - "paused"
+    action:
+      service: system_log.write
+      data:
+        message: "Player is not playing"
+```
+---
+```markdown
+Можно одновременно указать указать оба параметра `from` и `to`.
+В этом случае автоматизация запуститься если произошло изменение стейта, до изменения
+значение сущности было такое как указано в `from`, а стало такое как указано в `to`.
+
+## Параметр `attribute`
+
+Триггеру `state` можно указать необязательный параметр `attribute`.
+
+В том случае если указан параметр `attribute`, то автоматизация запуститься только при
+изменении значения этого атрибута у сущности. Вот пример. Есть сенсор sensor.tv,
+у него есть атрибут channel — канал который сейчас работает. Вот автоматизация
+которая запустится при изменении канала:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: state
+      entity_id: sensor.tv
+      attribute: channel
+    action:
+      service: system_log.write
+      data:
+        message: "TV has changed channel"
+```
+---
+```markdown
+В том случае если в описании триггера указан параметр `attribute`, то параметры `from`/`to`
+означают не стейт сущности, а значение атрибута. Вот автоматизация которая зпускается
+только когда значение атрибута bin у сущности робота пытесоса становисят full:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: state
+      entity_id: vacuum.rockrobo
+      attribute: bin
+      to: "full"
+    action:
+      service: system_log.write
+      data:
+        message: "Robot bin is full"
+```
+---
+```markdown
+
+
+```
