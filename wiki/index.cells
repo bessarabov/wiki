@@ -44,6 +44,7 @@ Home Assistant:
 Триггеры в автоматизациях Home Assistant:
 
  * [state](/wiki/home-assistant/trigger/state)
+ * [numeric_state](/wiki/home-assistant/trigger/numeric_state)
  * [sun](/wiki/home-assistant/trigger/sun)
  * [homeassistant](/wiki/home-assistant/trigger/homeassistant)
  * [mqtt](/wiki/home-assistant/trigger/mqtt)

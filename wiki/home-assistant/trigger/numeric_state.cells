@@ -1,0 +1,223 @@
+```meta
+{
+    "title" : "numeric_state триггер в автоматизациях Home Assistant"
+}
+```
+---
+```markdown
+# numeric_state триггер в автоматизациях Home Assistant
+
+`numeric_state` — это один из триггеров которые можно использовать в автоматизациях Home Assistant ([список всех триггеров](/wiki/home-assistant/triggers)).
+
+С помощью этого триггера можно запустить автоматизацию если числовое значение пересекат указанную границу.
+
+Если вам нужна базовая информация про автоматизации в Home Assistant — прочитайте [этот текст](https://ivan.bessarabov.ru/blog/home-assistant-automations).
+
+## Пример
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature
+      below: 10
+    action:
+      service: system_log.write
+      data:
+        message: "temperature is now below 10 degree"
+```
+---
+```markdown
+Это автоматизация запустится в тот момент когда значение sensor.temperature перейдет через 10 градусов.
+Например, значение сенсора было 10.4, а следующее значение стало 9.8. При таком изменении автоматизация будет запущена.
+
+## В какой момент стреляет триггер
+
+Триггер `numeric_state` запускает автоматизацию только при пересечении границы. Это очень важный момент,
+который обычно не понимают люди которые начинают использовать этот триггер.
+
+Например, вы создали новую автоматизацию — включать вентилятор если влажность в ванной комнате больше 60%:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: numeric_state
+      entity_id: sensor.bathroom_humidity
+      above: 60
+    action:
+      service: switch.turn_on
+      target:
+        entity_id: switch.bathroom_fam
+```
+---
+```markdown
+Когда вы создали эту автоматизацию влажность в ванной комнате была 65%. Но после создания этой автоматизации
+вентилятор не включится. Он не включается так как нет перехода. Влажнсость меняется 65%, 64%, но
+это изменение не запускает автоматизацию, так как нет перехода через границу.
+
+Эта автоматизация запустится только когда занчения перейдут через границу. Например, значение
+сенсора sensor.bathroom_humidity было 58%, а стало 62% — в такой ситуации есть переход и вентилятор включится.
+
+## Параметр `entity_id`
+
+Триггеру `numeric_state` нужно обзязательно указать entity_id. Значнеие это либо строка с указанием сущности.
+
+Если не указать этот параметр, то после перезапуска автоматизаций в логе будет ошибка:
+
+    Invalid config for [automation]: required key not provided @ data['entity_id']. Got None.
+
+## Параметры `above` и `below`
+
+Триггер `numeric_state` нужно обязательно указать параметр `above`, или параметр `below`, или оба сразу.
+
+Значение — это граница при пересении которой триггер будет запускать автоматизацию.
+
+ * Если указан параметр `above`, то автоматизация запуститься при изменении сущности когда предыщущее значение было меньше, а стало больше или равно указанному
+ * Если указан параметр `below`, то автоматизация запуститься при изменении сущности когда предыщущее значение было больше или равно, а стало строго меньше
+
+В том случае если указаны обновременно оба значения, то автоматизация запустится если значение сущности
+будет в границах того диапазон который определен. Пример:
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: numeric_state
+      entity_id: input_number.n1
+      above: 10
+      below: 20
+    action:
+      - service: system_log.write
+        data:
+          message: "run"
+```
+---
+```markdown
+Эта автоматизация запустится если значение input_number.n1 сначала было 9, а потом стало 15.
+Или сначала было 30, а потом стало 19. Или было 10, а стало 10.1. Или сначала было 20, а стало 19.9
+
+В том случае если значение `above` будет больше чем значение `below`, то такая автоматизация работать не будет,
+в логе будет:
+
+    Invalid config for [automation]: A value can never be above 30.0 and below 20.0 at the same time. You probably want two different triggers..
+
+В качестве значений `above` и `below` могут быть не только числа, но и input_number сущности:
+
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature
+      above: input_number.temperature_threshold_high
+      below: input_number.temperature_threshold_low
+    action:
+      - service: system_log.write
+        data:
+          message: "run"
+```
+---
+```markdown
+## Параметр `attribute`
+
+Триггеру `numeric_state` можно указать необязательный параметр `attribute`.
+
+В том случае если указан параметр `attribute`, то автоматизация запустится
+если границу перейдет не значение сущности, а значение указанного атрибута этой
+сущности. Пример:
+
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: numeric_state
+      entity_id: sensor.tv
+      attribute: volume
+      above: 90
+    action:
+      service: system_log.write
+      data:
+        message: "TV volume is too high"
+```
+---
+```markdown
+## Параметр `for`
+
+Триггеру `numeric_state` можно указать необязательный параметр `for`.
+
+Значение этого параметра — это период времени. Вот пример.
+Эта автоматизация запустится когда температура будет больше 25 градусов больше 5 минут.
+Т.е. значение сенсора переходит граинцу (было меньше 25, а стало 25 или больше),
+потом проходит 5 минут и автоматизация запускается. Автоматизация не запустится
+если 4 минуты температуру стала меньше 25 градусов.
+```
+---
+```yaml
+automation:
+  - trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature
+      above: 25
+      for: "00:05:00"
+    action:
+      service: system_log.write
+      data:
+        message: "temperature is more than 25 for 5 minutes"
+```
+---
+```markdown
+
+Период времени можно указать как в виде строк 'HH:MM', 'HH:MM:SS', 'HH:MM:SS.F', либо с помощью:
+
+```
+---
+```yaml
+
+automation:
+  - trigger:
+      platform: numeric_state
+      entity_id: sensor.temperature
+      above: 25
+      for:
+        minutes: 5
+    action:
+      service: system_log.write
+      data:
+        message: "temperature is more than 25 for 5 minutes"
+```
+---
+```markdown
+
+Можно использовать следующие параметры:
+
+ * days
+ * hours
+ * minutes
+ * seconds
+ * milliseconds
+
+Но указывать слешком долгий период следует с осторожностью. Если после перехода границы,
+но до истечения `for` сервер Home Assistnat перезагрузится, то этот запуск автоматизации
+не произойдет.
+
+## Переменная `trigger`
+
+После того как триггер сработал в блоках `condition` и `action` становится доступна специальная переменная
+с именем `trigger`. Вот пример что может находится в этой переменной:
+
+    {
+        'platform': 'numeric_state',
+        'entity_id': 'input_number.n1',
+        'below': 20.0,
+        'above': 10.0,
+        'from_state': <state input_number.n1=5.0; initial=None, editable=False, min=0.0, max=100.0, step=0.1, mode=box @ 2021-06-08T11:19:24.225065+00:00>,
+        'to_state': <state input_number.n1=11.0; initial=None, editable=False, min=0.0, max=100.0, step=0.1, mode=box @ 2021-06-08T11:19:34.431623+00:00>,
+        'for': None,
+        'description': 'numeric state of input_number.n1',
+        'id': '0'
+    }
+```
