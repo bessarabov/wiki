@@ -130,6 +130,26 @@ sensor:
 ```
 ---
 ```markdown
+## Создание template сенсора с атрибутами
+
+Можно создать сенсор и управлять не только содержимым стейта, но и тем что содержится в атрибутах. Вот пример:
+```
+---
+```yaml
+input_text:
+  t_state:
+  t_attribute:
+
+sensor:
+  - platform: template
+    sensors:
+      my:
+        value_template: "{{ states('input_text.t_state') }}"
+        attribute_templates:
+          a: "{{ states('input_text.t_attribute') }}"
+```
+---
+```markdown
 ## Использование кавычек и других символов
 
 Шаблон записывается в поле value_template. Обычно когда шаблон помещается в одну строчку, то он записывается в кавычках:
