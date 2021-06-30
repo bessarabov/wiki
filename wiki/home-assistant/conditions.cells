@@ -1,0 +1,21 @@
+```meta
+{
+    "title" : "Список условий (conditions) в автоматизациях Home Assistant"
+}
+```
+---
+```markdown
+# Список условий (conditions) в автоматизациях Home Assistant
+
+Официальная документация на условия в автоматизациях находится [на этой странице](https://www.home-assistant.io/docs/scripts/conditions/).
+
+ * state
+ * numeric_state
+ * template
+ * sun
+ * time
+ * zone
+ * not
+ * and
+ * or
+```
