@@ -60,7 +60,7 @@ automation:
 
     Invalid config for [automation]: must contain at least one of hours, minutes, seconds..
 
-Можно одноврменно указать лубой набор параметров, например два:
+Можно одноврменно указать любой набор параметров, например два:
 
 ```
 ---
