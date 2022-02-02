@@ -166,7 +166,8 @@ automation:
   - alias: Turn on light in the toilet by aqara sensor motion
     trigger:
       platform: mqtt
-      topic: zigbee2mqtt/0x00158d0004518e15 condition:
+      topic: zigbee2mqtt/0x00158d0004518e15
+    condition:
       condition: template
       value_template: "{{ trigger.payload_json.occupancy }}"
     action:
